@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Axion Store - Bienvenido{% endblock %}
+
+{% block extra_css %}
+<style>
+    .welcome-section {
+        position: relative;
+        min-height: 70vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        padding: 2rem 0;
+    }
+    
+    .background-carousel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        overflow: hidden;
+    }
+    
+    .background-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    
+    .background-slide.active {
+        opacity: 0.3;
+    }
+    
+    .welcome-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(26, 26, 46, 0.85) 0%, rgba(39, 68, 114, 0.85) 100%);
+        z-index: 1;
+    }
+    
+    .welcome-content {
+        position: relative;
+        z-index: 2;
+        color: white;
+    }
+    
+    .welcome-title {
+        color: white !important;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .axion-store-title {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: bold;
+    }
+    
+    .welcome-section p {
+        color: rgba(255, 255, 255, 0.95) !important;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+    
+    .btn-invitado, .btn-register {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .icon-feature {
+        color: var(--primary);
+    }
+    
+    @media (max-width: 768px) {
+        .welcome-section {
+            min-height: 60vh;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <!-- Carrusel de fondo - RUTAS CORREGIDAS -->
+    <div class="background-carousel" id="bgCarousel">
+        <div class="background-slide active" style="background-image: url('{{ url_for('static', filename='img/bg1.webp') }}');"></div>
+        <div class="background-slide" style="background-image: url('{{ url_for('static', filename='img/bg2.webp') }}');"></div>
+        <div class="background-slide" style="background-image: url('{{ url_for('static', filename='img/bg3.webp') }}');"></div>
+    </div>
+    
+    <div class="welcome-overlay"></div>
+    
+    <div class="container welcome-content">
+        <div class="row align-items-center">
+            <div class="col-lg-12 text-center">
+                <h1 class="display-3 fw-bold mb-4 welcome-title">
+                    Te damos la bienvenida a <span class="axion-store-title">Axion Store</span>
+                </h1>
+                <p class="lead mb-4">La mejor tienda de tecnología. Encuentra los productos más innovadores al mejor precio.</p>
+                <p class="fs-5 mb-5">¡Regístrate ahora mismo y disfruta de ofertas exclusivas!</p>
+                
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                    <a href="{{ url_for('home') }}" class="btn btn-dark btn-lg px-5 btn-invitado">
+                        <i class="fas fa-door-open icon-invitado"></i> <span class="text-invitado">Entrar como Invitado</span>
+                    </a>
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-light btn-lg px-5 btn-register">
+                        <i class="fas fa-user-plus icon-register"></i> <span class="text-register">Registrarse</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row mt-5 mb-5">
+        <div class="col-md-4 text-center mb-4">
+            <div class="card card-custom h-100 border-0">
+                <div class="card-body">
+                    <i class="fas fa-shipping-fast fa-3x mb-3 icon-feature"></i>
+                    <h5 class="card-title">Envío Rápido</h5>
+                    <p class="card-text">Recibe tus productos en tiempo récord</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 text-center mb-4">
+            <div class="card card-custom h-100 border-0">
+                <div class="card-body">
+                    <i class="fas fa-shield-alt fa-3x mb-3 icon-feature"></i>
+                    <h5 class="card-title">Compra Segura</h5>
+                    <p class="card-text">Tus datos protegidos siempre</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 text-center mb-4">
+            <div class="card card-custom h-100 border-0">
+                <div class="card-body">
+                    <i class="fas fa-headset fa-3x mb-3 icon-feature"></i>
+                    <h5 class="card-title">Soporte 24/7</h5>
+                    <p class="card-text">Asistencia cuando la necesites</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const slides = document.querySelectorAll('.background-slide');
+    if (!slides || slides.length === 0) return;
+    
+    let currentSlide = 0;
+    
+    function nextSlide() {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+    }
+    
+    // Cambiar slide cada 5 segundos
+    setInterval(nextSlide, 5000);
+});
+</script>
+{% endblock %}

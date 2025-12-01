@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% block title %}Editar Producto - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-edit"></i> Editar Producto
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-secondary">
+                        <strong>Editando:</strong> {{ producto.nombre }}
+                        <span class="badge bg-dark">ID: {{ producto.ID_Producto }}</span>
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nombre del Producto *</label>
+                            <input type="text" name="nombre" class="form-control" value="{{ producto.nombre }}" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Precio ($) *</label>
+                                    <input type="number" step="0.01" name="precio" class="form-control" value="{{ producto.precio }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Stock *</label>
+                                    <input type="number" name="stock" class="form-control" value="{{ producto.stock }}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CATEGORÍAS -->
+                        <div class="card mb-3 bg-light border">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-tags"></i> Categorización
+                                    <a href="{{ url_for('admin_categorias_referencia') }}" 
+                                       target="_blank" 
+                                       class="btn btn-sm btn-outline-info float-end">
+                                        <i class="fas fa-book"></i> Ver Referencia
+                                    </a>
+                                </h5>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Categoría Principal</label>
+                                    <select name="ID_Categoria" id="selectCategoria" class="form-select" onchange="cargarSubcategorias()">
+                                        <option value="">-- Sin categoría --</option>
+                                        {% for cat in categorias %}
+                                        <option value="{{ cat.ID_Categoria }}" 
+                                                data-subcategorias='[{% for sub in cat.subcategorias %}{"ID_Subcategoria": {{ sub.ID_Subcategoria }}, "nombre": "{{ sub.nombre|e }}", "activa": {{ "true" if sub.activa else "false" }}}{% if not loop.last %},{% endif %}{% endfor %}]'
+                                                {% if producto.ID_Categoria == cat.ID_Categoria %}selected{% endif %}>
+                                            [ID: {{ cat.ID_Categoria }}] {{ cat.nombre }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Subcategoría</label>
+                                    <select name="ID_Subcategoria" id="selectSubcategoria" class="form-select">
+                                        <option value="">-- Sin subcategoría --</option>
+                                    </select>
+                                </div>
+
+                                {% if producto.categoria or producto.subcategoria %}
+                                <div class="alert alert-info">
+                                    <strong>Categorización actual:</strong>
+                                    {% if producto.categoria %}
+                                        <i class="{{ producto.categoria.icono }}"></i> {{ producto.categoria.nombre }}
+                                        {% if producto.subcategoria %}
+                                            → {{ producto.subcategoria.nombre }}
+                                        {% endif %}
+                                    {% else %}
+                                        Sin categoría
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- IMAGEN -->
+                        <div class="mb-3">
+                            <label class="form-label">Imagen del Producto</label>
+                            
+                            {% if producto.imagen %}
+                            <div class="mb-2">
+                                <img src="{{ url_for('static', filename=producto.imagen) }}" 
+                                     class="img-thumbnail" 
+                                     style="max-height: 150px;"
+                                     onerror="this.src='{{ url_for('static', filename='img/no-image.png') }}'; this.onerror=null;">
+                                <p class="small text-muted mb-0">Imagen actual</p>
+                            </div>
+                            {% endif %}
+                            
+                            <input type="file" name="imagen_file" class="form-control" accept="image/*" onchange="previewImagen(event)">
+                            <small class="text-muted">Formatos: PNG, JPG, JPEG, GIF, WEBP (máx 2MB)</small>
+                            
+                            <div class="mt-2">
+                                <small class="text-muted">O ingresa URL de imagen:</small>
+                                <input type="text" name="imagen" class="form-control" 
+                                       value="{{ producto.imagen or '' }}" 
+                                       placeholder="https://ejemplo.com/imagen.jpg">
+                            </div>
+                            
+                            <div id="imagePreview" class="mt-2"></div>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="disponible" 
+                                   id="disponible" {% if producto.disponible %}checked{% endif %}>
+                            <label class="form-check-label" for="disponible">
+                                <strong>Producto disponible para la venta</strong>
+                            </label>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save"></i> Guardar Cambios
+                            </button>
+                            <a href="{{ url_for('admin_productos') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL DE INFORMACIÓN -->
+        <div class="col-md-4">
+            <div class="card shadow mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Información</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>ID Producto:</strong> {{ producto.ID_Producto }}</p>
+                    <p><strong>Precio actual:</strong> ${{ "%.2f"|format(producto.precio) }}</p>
+                    <p><strong>Stock actual:</strong> {{ producto.stock }}</p>
+                    <p>
+                        <strong>Estado:</strong> 
+                        {% if producto.disponible %}
+                        <span class="badge bg-success">Disponible</span>
+                        {% else %}
+                        <span class="badge bg-danger">No disponible</span>
+                        {% endif %}
+                    </p>
+                    
+                    <hr>
+                    
+                    <h6>Categorías Disponibles:</h6>
+                    <ul class="list-unstyled small">
+                        {% for cat in categorias %}
+                        <li class="mb-2">
+                            <i class="{{ cat.icono }}"></i> 
+                            {{ cat.nombre }}
+                            <span class="badge bg-secondary">{{ cat.ID_Categoria }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Consejo</h5>
+                </div>
+                <div class="card-body">
+                    <small>
+                        Si el stock es 0, considera marcar el producto como "No disponible" 
+                        para que no aparezca en la tienda.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Precargar subcategorías al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    cargarSubcategorias();
+    
+    // Seleccionar subcategoría actual si existe
+    const subcategoriaActual = {{ producto.ID_Subcategoria or 'null' }};
+    if (subcategoriaActual) {
+        setTimeout(() => {
+            document.getElementById('selectSubcategoria').value = subcategoriaActual;
+        }, 100);
+    }
+});
+
+function cargarSubcategorias() {
+    const selectCat = document.getElementById('selectCategoria');
+    const selectSub = document.getElementById('selectSubcategoria');
+    
+    const selectedOption = selectCat.options[selectCat.selectedIndex];
+    const categoriaId = selectCat.value;
+    
+    // Limpiar
+    selectSub.innerHTML = '<option value="">-- Sin subcategoría --</option>';
+    
+    if (!categoriaId) {
+        selectSub.disabled = true;
+        return;
+    }
+    
+    selectSub.disabled = false;
+    
+    try {
+        const subcategorias = JSON.parse(selectedOption.dataset.subcategorias || '[]');
+        
+        subcategorias.forEach(sub => {
+            if (sub.activa) {
+                const option = document.createElement('option');
+                option.value = sub.ID_Subcategoria;
+                option.textContent = `[ID: ${sub.ID_Subcategoria}] ${sub.nombre}`;
+                selectSub.appendChild(option);
+            }
+        });
+    } catch (e) {
+        console.error('Error:', e);
+    }
+}
+
+function previewImagen(event) {
+    const preview = document.getElementById('imagePreview');
+    const file = event.target.files[0];
+    
+    if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+            alert('La imagen es muy grande. Máximo 2MB.');
+            event.target.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="max-height: 200px;">`;
+        }
+        reader.readAsDataURL(file);
+    }
+}
+</script>
+{% endblock %}

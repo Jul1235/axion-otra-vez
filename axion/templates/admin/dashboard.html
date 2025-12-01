@@ -1,0 +1,435 @@
+{% extends "base.html" %}
+
+{% block title %}Axion Store - Panel de Administración{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-4 fw-bold">
+            <i class="fas fa-tachometer-alt"></i> Panel de Administración
+        </h1>
+        <span class="badge bg-primary fs-6">Administrador</span>
+    </div>
+
+    <!-- Tarjetas de Estadísticas Principales -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-4">
+            <div class="card card-custom border-0 text-center h-100 stat-card">
+                <div class="card-body">
+                    <i class="fas fa-users fa-3x mb-3 stat-icon"></i>
+                    <h3 class="fw-bold stat-number">{{ total_usuarios }}</h3>
+                    <p class="mb-0 stat-label">Usuarios Registrados</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card card-custom border-0 text-center h-100 stat-card">
+                <div class="card-body">
+                    <i class="fas fa-box fa-3x mb-3 stat-icon"></i>
+                    <h3 class="fw-bold stat-number">{{ total_productos }}</h3>
+                    <p class="mb-0 stat-label">Productos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card card-custom border-0 text-center h-100 stat-card">
+                <div class="card-body">
+                    <i class="fas fa-shopping-bag fa-3x mb-3 stat-icon"></i>
+                    <h3 class="fw-bold stat-number">{{ total_pedidos }}</h3>
+                    <p class="mb-0 stat-label">Pedidos Totales</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card card-custom border-0 text-center h-100 stat-card">
+                <div class="card-body">
+                    <i class="fas fa-dollar-sign fa-3x mb-3 stat-icon"></i>
+                    <h3 class="fw-bold stat-number">${{ "%.2f"|format(total_ventas) }}</h3>
+                    <p class="mb-0 stat-label">Ventas Totales</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ NUEVA GRÁFICA COMPARATIVA -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card card-custom border-0">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">
+                        <i class="fas fa-chart-area"></i> Análisis Comparativo de Comportamiento
+                    </h5>
+
+                    <!-- Métricas rápidas -->
+                    <div class="row text-center mb-4">
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded">
+                                <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                                <h4 class="fw-bold">{{ total_productos_vendidos }}</h4>
+                                <small class="text-muted">Productos Vendidos</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded">
+                                <i class="fas fa-times-circle fa-2x text-danger mb-2"></i>
+                                <h4 class="fw-bold">{{ total_abandonos }}</h4>
+                                <small class="text-muted">Productos Abandonados</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded">
+                                <i class="fas fa-shopping-cart fa-2x text-warning mb-2"></i>
+                                <h4 class="fw-bold">{{ productos_en_carritos }}</h4>
+                                <small class="text-muted">En Carritos Activos</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gráfica de líneas -->
+                    <div style="height: 350px;">
+                        <canvas id="comparativaChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Acciones Rápidas -->
+        <div class="col-md-6 mb-4">
+            <div class="card card-custom border-0 h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">
+                        <i class="fas fa-bolt"></i> Acciones Rápidas
+                    </h5>
+                    <div class="d-grid gap-3">
+                        <a href="{{ url_for('admin_analytics') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-chart-line"></i> Panel de Analytics Completo
+                        </a>
+                        <a href="{{ url_for('admin_productos') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-box"></i> Gestionar Productos
+                        </a>
+                        <a href="{{ url_for('admin_categorias') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-tags"></i> Gestionar Categorías
+                        </a>
+                        <a href="{{ url_for('admin_usuarios') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-users"></i> Gestionar Usuarios
+                        </a>
+                        <a href="{{ url_for('admin_pedidos') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-shopping-bag"></i> Ver Pedidos
+                        </a>
+                        <a href="{{ url_for('admin_agregar_producto') }}" class="btn btn-success btn-lg">
+                            <i class="fas fa-plus"></i> Agregar Producto
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pedidos Recientes -->
+        <div class="col-md-6 mb-4">
+            <div class="card card-custom border-0 h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">
+                        <i class="fas fa-history"></i> Pedidos Recientes
+                    </h5>
+
+                    {% if pedidos_recientes %}
+                        {% for pedido in pedidos_recientes %}
+                        <div class="d-flex justify-content-between align-items-center mb-3 p-3 pedido-item">
+                            <div>
+                                <h6 class="mb-1">Pedido #{{ pedido.ID_Pedido }}</h6>
+                                <small class="text-muted">
+                                    {{ pedido.fecha.strftime('%d/%m/%Y %H:%M') }}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <strong>${{ "%.2f"|format(pedido.total) }}</strong>
+                                <br>
+                                <span class="badge bg-success">{{ pedido.estado }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center">No hay pedidos recientes</p>
+                    {% endif %}
+
+                    <a href="{{ url_for('admin_pedidos') }}" class="btn btn-outline-secondary w-100 mt-3">
+                        Ver Todos los Pedidos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Métricas Rápidas de Categorías -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card card-custom border-0">
+                <div class="card-header category-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar"></i> Resumen de Categorías
+                    </h5>
+                    <a href="{{ url_for('admin_analytics') }}" class="btn btn-sm btn-outline-light">
+                        Ver Detalles <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 category-table">
+                            <thead>
+                                <tr>
+                                    <th>Categoría</th>
+                                    <th class="text-center">Productos</th>
+                                    <th class="text-center">Vendidos</th>
+                                    <th class="text-end">Ingresos</th>
+                                    <th class="text-center">Conversión</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for categoria in categorias_metricas %}
+                                <tr>
+                                    <td>
+                                        <i class="{{ categoria.icono or 'fas fa-box' }}"></i>
+                                        {{ categoria.nombre }}
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-secondary">{{ categoria.productos_activos or 0 }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info">{{ categoria.total_vendidos or 0 }}</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <strong>${{ "%.2f"|format(categoria.ingresos or 0) }}</strong>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if categoria.tasa_conversion %}
+                                            {% if categoria.tasa_conversion >= 50 %}
+                                            <span class="badge bg-success">{{ "%.1f"|format(categoria.tasa_conversion) }}%</span>
+                                            {% elif categoria.tasa_conversion >= 20 %}
+                                            <span class="badge bg-warning text-dark">{{ "%.1f"|format(categoria.tasa_conversion) }}%</span>
+                                            {% else %}
+                                            <span class="badge bg-danger">{{ "%.1f"|format(categoria.tasa_conversion) }}%</span>
+                                            {% endif %}
+                                        {% else %}
+                                        <span class="badge bg-secondary">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        No hay datos de categorías disponibles
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center p-3">
+                        <a href="{{ url_for('admin_actualizar_metricas_categorias') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-sync"></i> Actualizar Métricas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exportar Datos -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card card-custom border-0">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="fas fa-download"></i> Exportar Datos
+                    </h5>
+                    <div class="d-flex gap-3 flex-wrap align-items-center">
+                        <a href="{{ url_for('exportar_usuarios_csv') }}" class="btn btn-outline-success">
+                            <i class="fas fa-file-csv"></i> Exportar Usuarios (CSV)
+                        </a>
+                        <a href="{{ url_for('exportar_productos_csv') }}" class="btn btn-outline-success">
+                            <i class="fas fa-file-csv"></i> Exportar Productos (CSV)
+                        </a>
+
+                        <form class="d-flex align-items-center" method="GET" action="{{ url_for('exportar_ventas_csv') }}">
+                            <label class="me-2 mb-0 small text-muted">Desde</label>
+                            <input type="date" name="desde" class="form-control form-control-sm me-2" />
+                            <label class="me-2 mb-0 small text-muted">Hasta</label>
+                            <input type="date" name="hasta" class="form-control form-control-sm me-2" />
+                            <button class="btn btn-outline-success me-2" type="submit"><i class="fas fa-file-csv"></i> Detallado</button>
+                        </form>
+
+                        <form class="d-flex align-items-center" method="GET" action="{{ url_for('exportar_ventas_simple_csv') }}">
+                            <label class="me-2 mb-0 small text-muted">Desde</label>
+                            <input type="date" name="desde" class="form-control form-control-sm me-2" />
+                            <label class="me-2 mb-0 small text-muted">Hasta</label>
+                            <input type="date" name="hasta" class="form-control form-control-sm me-2" />
+                            <button class="btn btn-outline-success me-2" type="submit"><i class="fas fa-file-csv"></i> Simple</button>
+                        </form>
+
+                        <div class="btn-group" role="group">
+                            <a href="{{ url_for('exportar_ventas_csv') }}?desde={{ last7 }}&hasta={{ now }}" class="btn btn-sm btn-secondary">Detallado 7d</a>
+                            <a href="{{ url_for('exportar_ventas_simple_csv') }}?desde={{ last7 }}&hasta={{ now }}" class="btn btn-sm btn-outline-secondary">Simple 7d</a>
+                            <a href="{{ url_for('exportar_ventas_csv') }}?desde={{ last30 }}&hasta={{ now }}" class="btn btn-sm btn-secondary">Detallado 30d</a>
+                            <a href="{{ url_for('exportar_ventas_simple_csv') }}?desde={{ last30 }}&hasta={{ now }}" class="btn btn-sm btn-outline-secondary">Simple 30d</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ✅ NUEVA GRÁFICA COMPARATIVA
+    const ctx = document.getElementById('comparativaChart');
+    if (ctx) {
+        // Preparar datos de ventas
+        const ventasDatos = [
+            {% for venta in ventas_diarias %}
+            { fecha: '{{ venta.fecha }}', valor: {{ venta.vendidos }} },
+            {% endfor %}
+        ];
+
+        // Preparar datos de abandonos
+        const abandonosDatos = [
+            {% for abandono in abandonos_diarios %}
+            { fecha: '{{ abandono.fecha }}', valor: {{ abandono.abandonados }} },
+            {% endfor %}
+        ];
+
+        // Generar array completo de fechas (últimos 30 días)
+        const fechas = [];
+        const hoy = new Date();
+        for (let i = 29; i >= 0; i--) {
+            const fecha = new Date(hoy);
+            fecha.setDate(fecha.getDate() - i);
+            fechas.push(fecha.toISOString().split('T')[0]);
+        }
+
+        // Mapear datos a las fechas
+        const ventasMap = new Map(ventasDatos.map(d => [d.fecha, d.valor]));
+        const abandonosMap = new Map(abandonosDatos.map(d => [d.fecha, d.valor]));
+
+        const ventasArray = fechas.map(f => ventasMap.get(f) || 0);
+        const abandonosArray = fechas.map(f => abandonosMap.get(f) || 0);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: fechas.map(f => {
+                    const d = new Date(f);
+                    return d.getDate() + '/' + (d.getMonth() + 1);
+                }),
+                datasets: [
+                    {
+                        label: 'Productos Vendidos',
+                        data: ventasArray,
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Productos Abandonados',
+                        data: abandonosArray,
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'En Carritos Activos',
+                        data: Array(30).fill({{ productos_en_carritos }}),
+                        borderColor: '#ffc107',
+                        backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                        borderDash: [5, 5],
+                        tension: 0,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        transition: transform 0.3s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .stat-icon {
+        color: var(--color-primary);
+    }
+    .stat-number {
+        color: var(--color-text);
+    }
+    .stat-label {
+        color: var(--color-text-sec);
+    }
+
+    .pedido-item {
+        background: var(--color-bg);
+        border-radius: 8px;
+        border: 1px solid var(--color-border);
+    }
+
+    .category-header {
+        background: var(--color-primary);
+        color: #fff;
+    }
+
+    .category-table th {
+        background: transparent;
+        border-bottom: 2px solid var(--color-border);
+    }
+
+    .dark-mode .stat-icon {
+        color: var(--color-accent) !important;
+    }
+
+    .dark-mode .pedido-item {
+        background: rgba(255,255,255,0.03);
+        border-color: var(--color-border);
+    }
+
+    .dark-mode .category-header {
+        background: #1A1F27;
+    }
+</style>
+{% endblock %}

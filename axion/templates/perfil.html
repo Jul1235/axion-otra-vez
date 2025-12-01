@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}Axion Store - Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Header del Perfil -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card card-custom border-0">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-2 text-center">
+                            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center"
+                                 style="width: 100px; height: 100px; font-size: 2.5rem;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <h2 class="fw-bold mb-1">{{ usuario.nombre }}</h2>
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-envelope"></i> {{ usuario.email }}
+                            </p>
+                            <p class="mb-0">
+                                <span class="badge
+                                    {% if usuario.segmento_cliente == 'activo' %}bg-success
+                                    {% elif usuario.segmento_cliente == 'inactivo' %}bg-secondary
+                                    {% else %}bg-primary{% endif %} me-2">
+                                    <i class="fas fa-star"></i> {{ usuario.segmento_cliente|capitalize }}
+                                </span>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar"></i>
+                                    Miembro desde {{ usuario.fecha_registro.strftime('%d/%m/%Y') if usuario.fecha_registro else 'N/A' }}
+                                </small>
+                            </p>
+                        </div>
+                        <div class="col-md-3 text-md-end mt-3 mt-md-0">
+                            <a href="{{ url_for('editar_perfil') }}" class="btn btn-primary-custom">
+                                <i class="fas fa-edit"></i> Editar Perfil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Estadísticas -->
+        <div class="col-md-4 mb-4">
+            <div class="card card-custom border-0 h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-wallet fa-3x mb-3" style="color: var(--primary);"></i>
+                    <h3 class="fw-bold">${{ "%.2f"|format(wallet.saldo if wallet else 0) }}</h3>
+                    <p class="text-muted mb-3">Saldo Disponible</p>
+                    <a href="{{ url_for('wallet') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-plus"></i> Recargar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card card-custom border-0 h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-shopping-bag fa-3x mb-3" style="color: var(--primary);"></i>
+                    <h3 class="fw-bold">{{ usuario.total_compras }}</h3>
+                    <p class="text-muted mb-3">Compras Realizadas</p>
+                    <a href="{{ url_for('historial') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-history"></i> Ver Historial
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card card-custom border-0 h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-dollar-sign fa-3x mb-3" style="color: var(--primary);"></i>
+                    <h3 class="fw-bold">${{ "%.2f"|format(usuario.total_gastado) }}</h3>
+                    <p class="text-muted mb-3">Total Gastado</p>
+                    <p class="small text-muted mb-0">
+                        Ticket promedio: ${{ "%.2f"|format(usuario.ticket_promedio) }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Últimos Pedidos -->
+        <div class="col-md-6 mb-4">
+            <div class="card card-custom border-0 h-100">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-receipt"></i> Últimos Pedidos
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if ultimos_pedidos %}
+                        {% for pedido in ultimos_pedidos %}
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                            <div>
+                                <strong>Pedido #{{ pedido.ID_Pedido }}</strong>
+                                <br>
+                                <small class="text-muted">
+                                    {{ pedido.fecha.strftime('%d/%m/%Y %H:%M') }}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <span class="fw-bold text-success">${{ "%.2f"|format(pedido.total) }}</span>
+                                <br>
+                                <span class="badge bg-success">{{ pedido.estado }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center py-4">
+                            <i class="fas fa-shopping-bag fa-2x mb-2 d-block"></i>
+                            No tienes pedidos aún
+                        </p>
+                    {% endif %}
+
+                    <a href="{{ url_for('historial') }}" class="btn btn-outline-primary w-100 mt-2">
+                        Ver Todos los Pedidos
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Últimas Transacciones -->
+        <div class="col-md-6 mb-4">
+            <div class="card card-custom border-0 h-100">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exchange-alt"></i> Últimas Transacciones
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if ultimas_transacciones %}
+                        {% for trans in ultimas_transacciones %}
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                            <div>
+                                <span class="badge
+                                    {% if trans.tipo == 'recarga' %}bg-success
+                                    {% elif trans.tipo == 'compra' %}bg-primary
+                                    {% else %}bg-warning text-dark{% endif %} me-2">
+                                    {{ trans.tipo|capitalize }}
+                                </span>
+                                <br>
+                                <small class="text-muted">
+                                    {{ trans.fecha.strftime('%d/%m/%Y %H:%M') }}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <span class="fw-bold {% if trans.monto > 0 %}text-success{% else %}text-danger{% endif %}">
+                                    {{ "+" if trans.monto > 0 else "" }}${{ "%.2f"|format(trans.monto) }}
+                                </span>
+                                <br>
+                                <small class="text-muted">
+                                    Saldo: ${{ "%.2f"|format(trans.saldo_nuevo) }}
+                                </small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center py-4">
+                            <i class="fas fa-wallet fa-2x mb-2 d-block"></i>
+                            No tienes transacciones aún
+                        </p>
+                    {% endif %}
+
+                    <a href="{{ url_for('wallet') }}" class="btn btn-outline-primary w-100 mt-2">
+                        Ir a Mi Wallet
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información Adicional -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-custom border-0">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line"></i> Resumen de Actividad
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3">
+                            <h4 class="fw-bold text-primary">{{ usuario.total_recargas }}</h4>
+                            <small class="text-muted">Recargas Realizadas</small>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h4 class="fw-bold text-success">${{ "%.2f"|format(usuario.dinero_recargado_total) }}</h4>
+                            <small class="text-muted">Total Recargado</small>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h4 class="fw-bold text-info">{{ usuario.productos_carrito_actual }}</h4>
+                            <small class="text-muted">Productos en Carrito</small>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h4 class="fw-bold text-warning">{{ "%.1f"|format(usuario.tasa_conversion) }}%</h4>
+                            <small class="text-muted">Tasa de Conversión</small>
+                        </div>
+                    </div>
+
+                    {% if usuario.ultimo_pedido_fecha %}
+                    <hr>
+                    <p class="text-muted text-center mb-0">
+                        <i class="fas fa-clock"></i>
+                        Última compra: {{ usuario.ultimo_pedido_fecha.strftime('%d/%m/%Y %H:%M') }}
+                        {% if usuario.dias_desde_ultima_compra %}
+                        (hace {{ usuario.dias_desde_ultima_compra }} días)
+                        {% endif %}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preferencias de Tema -->
+    <div class="row mt-4">
+        <div class="col-md-6 offset-md-3">
+            <div class="card card-custom border-0">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0"><i class="fas fa-adjust"></i> Preferencias de Tema</h5>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted">Selecciona tu preferencia de tema. Se aplicará inmediatamente.</p>
+                    <div class="d-flex gap-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="axion_theme" id="theme-light" value="light">
+                            <label class="form-check-label" for="theme-light">Tema Claro</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="axion_theme" id="theme-system" value="system">
+                            <label class="form-check-label" for="theme-system">Tema del dispositivo</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="axion_theme" id="theme-dark" value="dark">
+                            <label class="form-check-label" for="theme-dark">Tema Oscuro</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function getSavedTheme() { return localStorage.getItem('axion-theme') || 'system'; }
+
+    function reflectSelection(t) {
+        document.getElementById('theme-light').checked = (t === 'light');
+        document.getElementById('theme-dark').checked = (t === 'dark');
+        document.getElementById('theme-system').checked = (t === 'system');
+    }
+
+    var initial = getSavedTheme();
+    reflectSelection(initial);
+
+    document.querySelectorAll('input[name="axion_theme"]').forEach(function(r) {
+        r.addEventListener('change', function() {
+            var v = this.value;
+            if (window.setAxionTheme) {
+                window.setAxionTheme(v);
+            } else {
+                localStorage.setItem('axion-theme', v);
+                location.reload();
+            }
+            reflectSelection(v);
+        });
+    });
+});
+</script>
+{% endblock %}

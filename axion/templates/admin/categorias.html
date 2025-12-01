@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Categorías - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-tags"></i> Gestión de Categorías</h2>
+        <div>
+            <a href="{{ url_for('admin_agregar_categoria') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Nueva Categoría
+            </a>
+            <a href="{{ url_for('admin_agregar_subcategoria') }}" class="btn btn-info">
+                <i class="fas fa-plus"></i> Nueva Subcategoría
+            </a>
+            <a href="{{ url_for('admin_categorias_referencia') }}" class="btn btn-secondary" target="_blank">
+                <i class="fas fa-book"></i> Referencia
+            </a>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    {% if categorias %}
+        {% for categoria in categorias %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center"
+                 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h4 class="mb-0">
+                    <i class="{{ categoria.icono or 'fa-box' }}"></i> 
+                    {{ categoria.nombre }}
+                    <span class="badge bg-light text-dark ms-2">ID: {{ categoria.ID_Categoria }}</span>
+                    {% if not categoria.activa %}
+                        <span class="badge bg-warning text-dark">Inactiva</span>
+                    {% endif %}
+                </h4>
+                <div>
+                    <a href="{{ url_for('admin_editar_categoria', categoria_id=categoria.ID_Categoria) }}" 
+                       class="btn btn-sm btn-light">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="{{ url_for('admin_eliminar_categoria', categoria_id=categoria.ID_Categoria) }}" 
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('¿Seguro que deseas eliminar esta categoría?\n\nNOTA: Solo se puede eliminar si no tiene productos asociados.')">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if categoria.descripcion %}
+                <p class="text-muted mb-3">
+                    <i class="fas fa-info-circle"></i> {{ categoria.descripcion }}
+                </p>
+                {% endif %}
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="alert alert-info mb-0">
+                            <strong>Total Productos:</strong> 
+                            <span class="badge bg-primary">{{ categoria.productos|length }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="alert alert-secondary mb-0">
+                            <strong>Subcategorías:</strong> 
+                            <span class="badge bg-dark">{{ categoria.subcategorias|length }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="alert alert-success mb-0">
+                            <strong>Orden:</strong> 
+                            <span class="badge bg-success">{{ categoria.orden }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5 class="mt-4 mb-3">
+                    <i class="fas fa-list"></i> Subcategorías 
+                    <small class="text-muted">({{ categoria.subcategorias|length }})</small>
+                </h5>
+                
+                {% if categoria.subcategorias %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="80" class="text-center">ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th width="100" class="text-center">Productos</th>
+                                <th width="80" class="text-center">Orden</th>
+                                <th width="100" class="text-center">Estado</th>
+                                <th width="150" class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sub in categoria.subcategorias|sort(attribute='orden') %}
+                            <tr>
+                                <td class="text-center">
+                                    <strong class="badge bg-secondary">{{ sub.ID_Subcategoria }}</strong>
+                                </td>
+                                <td>
+                                    <strong>{{ sub.nombre }}</strong>
+                                </td>
+                                <td>
+                                    <small class="text-muted">
+                                        {{ sub.descripcion or '-' }}
+                                    </small>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-info">{{ sub.productos|length }}</span>
+                                </td>
+                                <td class="text-center">{{ sub.orden }}</td>
+                                <td class="text-center">
+                                    {% if sub.activa %}
+                                    <span class="badge bg-success">Activa</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Inactiva</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ url_for('admin_editar_subcategoria', subcategoria_id=sub.ID_Subcategoria) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{{ url_for('admin_eliminar_subcategoria', subcategoria_id=sub.ID_Subcategoria) }}" 
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('¿Eliminar la subcategoría \'{{ sub.nombre }}\'?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    No hay subcategorías en esta categoría. 
+                    <a href="{{ url_for('admin_agregar_subcategoria') }}" class="alert-link">Crear una ahora</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="alert alert-info text-center py-5">
+        <i class="fas fa-info-circle fa-3x mb-3"></i>
+        <h4>No hay categorías creadas</h4>
+        <p>Comienza creando tu primera categoría para organizar tus productos.</p>
+        <a href="{{ url_for('admin_agregar_categoria') }}" class="btn btn-success btn-lg mt-3">
+            <i class="fas fa-plus"></i> Crear Primera Categoría
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

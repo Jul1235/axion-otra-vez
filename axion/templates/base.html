@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Axion Store{% endblock %}</title>
+    
+    <!-- ✅ PREVENIR FLASH DE TEMA - Debe ir ANTES del CSS -->
+    <script>
+        (function() {
+            var theme = localStorage.getItem('axion-theme');
+            function applyDark() {
+                document.documentElement.classList.add('dark-mode');
+                document.documentElement.style.backgroundColor = '#0F1217';
+            }
+            function applyLight() {
+                document.documentElement.classList.remove('dark-mode');
+                document.documentElement.style.backgroundColor = '';
+            }
+
+            if (theme === 'dark') {
+                applyDark();
+            } else if (theme === 'light') {
+                applyLight();
+            } else if (theme === 'system') {
+                // seguir preferencia del sistema
+                var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) applyDark(); else applyLight();
+            }
+        })();
+    </script>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='Marca/logo.png') }}" alt="Axion Store" class="navbar-logo">
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">
+                            <i class="fas fa-home"></i> Inicio
+                        </a>
+                    </li>
+                    
+                    {% if session.get('user_id') %}
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('historial') }}">
+                                <i class="fas fa-history"></i> Mis Pedidos
+                            </a>
+                        </li>
+                        
+                        {% if session.get('is_admin') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                                <i class="fas fa-cog"></i> Panel Admin
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> {{ session['user_name'] }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ url_for('perfil') }}"><i class="fas fa-user"></i>Mi Perfil</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('wishlist') }}">
+                                        <i class="fas fa-heart"></i>Mi Lista de Deseos
+                                        {% if wishlist_count and wishlist_count > 0 %}
+                                        <span class="badge bg-danger">{{ wishlist_count }}</span>
+                                        {% endif %}
+                                    </a>
+                                </li>
+                                <li><a class="dropdown-item" href="{{ url_for('wallet') }}"><i class="fas fa-wallet"></i>Mi Wallet</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('historial') }}"><i class="fas fa-history"></i>Mis Pedidos</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Cerrar Sesión</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">
+                                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">
+                                <i class="fas fa-user-plus"></i> Registrarse
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            
+            <!-- Icono carrito (siempre visible) -->
+            <a id="cart-button" href="{{ url_for('cart') }}" class="btn btn-outline-light ms-3 position-relative" title="Ver carrito">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.65rem; {% if not (cart_count and cart_count>0) %}display:none;{% endif %}">
+                    {{ cart_count or 0 }}
+                </span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Mensajes Flash -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Contenido Principal -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 Axion Store. Dando lo mejor a nuestros clientes.</p>
+            <p class="mb-0"><small>Desarrollado con Flask & Bootstrap</small></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/password-toggle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/autocomplete.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cart-inline.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/skeletons.js') }}"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Auto-cerrar alertas (más rápido)
+        const alerts = document.querySelectorAll('.alert');
+        if (alerts && alerts.length > 0) {
+            setTimeout(function () {
+                alerts.forEach(function (el) {
+                    try {
+                        var bsAlert = bootstrap.Alert.getOrCreateInstance(el);
+                        bsAlert.close();
+                    } catch (e) {
+                        el.classList.remove('show');
+                        el.style.display = 'none';
+                    }
+                });
+            }, 3000);
+        }
+
+        // Theme control: expose a global setter `setAxionTheme(theme)` where theme is 'light'|'dark'|'system'
+        window.setAxionTheme = function(theme) {
+            try {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('axion-theme', 'dark');
+                } else if (theme === 'light') {
+                    document.documentElement.classList.remove('dark-mode');
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('axion-theme', 'light');
+                } else if (theme === 'system') {
+                    // seguir preferencia de sistema
+                    localStorage.setItem('axion-theme', 'system');
+                    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (prefersDark) {
+                        document.documentElement.classList.add('dark-mode');
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.documentElement.classList.remove('dark-mode');
+                        document.body.classList.remove('dark-mode');
+                    }
+                }
+            } catch (e) {
+                console.error('Error aplicando tema', e);
+            }
+        };
+
+        // Escuchar cambios en la preferencia del sistema para modo 'system'
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                var t = localStorage.getItem('axion-theme');
+                if (t === 'system') {
+                    if (e.matches) {
+                        document.documentElement.classList.add('dark-mode');
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.documentElement.classList.remove('dark-mode');
+                        document.body.classList.remove('dark-mode');
+                    }
+                }
+            });
+        }
+    });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}Nueva Subcategoría - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-plus-circle"></i> Crear Nueva Subcategoría
+                    </h4>
+                </div>
+                <div class="card-body">
+                    
+                    {% if not categorias %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>No hay categorías disponibles.</strong>
+                        Primero debes <a href="{{ url_for('admin_agregar_categoria') }}" class="alert-link">crear una categoría</a> antes de agregar subcategorías.
+                    </div>
+                    <a href="{{ url_for('admin_agregar_categoria') }}" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Crear Categoría
+                    </a>
+                    <a href="{{ url_for('admin_categorias') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                    {% else %}
+                    
+                    <form method="POST" action="{{ url_for('admin_agregar_subcategoria') }}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Categoría Principal *</label>
+                            <select name="ID_Categoria" class="form-select form-select-lg" required>
+                                <option value="">-- Seleccionar Categoría --</option>
+                                {% for cat in categorias %}
+                                <option value="{{ cat.ID_Categoria }}">
+                                    <i class="{{ cat.icono }}"></i> [ID: {{ cat.ID_Categoria }}] {{ cat.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">
+                                La subcategoría pertenecerá a esta categoría
+                            </small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nombre de la Subcategoría *</label>
+                            <input type="text" 
+                                   name="nombre" 
+                                   class="form-control" 
+                                   placeholder="Ej: Tarjetas Gráficas, Procesadores, Ratones"
+                                   required
+                                   maxlength="100">
+                            <small class="text-muted">
+                                Debe ser único dentro de la categoría
+                            </small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea name="descripcion" 
+                                      class="form-control" 
+                                      rows="3"
+                                      placeholder="Descripción breve de la subcategoría"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Orden de visualización</label>
+                            <input type="number" 
+                                   name="orden" 
+                                   class="form-control" 
+                                   value="0"
+                                   min="0">
+                            <small class="text-muted">
+                                Orden dentro de su categoría (menor = aparece primero)
+                            </small>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" 
+                                   type="checkbox" 
+                                   name="activa" 
+                                   id="activa" 
+                                   checked>
+                            <label class="form-check-label" for="activa">
+                                <strong>Subcategoría activa</strong>
+                            </label>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-info text-white btn-lg">
+                                <i class="fas fa-save"></i> Crear Subcategoría
+                            </button>
+                            <a href="{{ url_for('admin_categorias') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Panel de referencia -->
+            {% if categorias %}
+            <div class="card shadow mt-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-book"></i> Categorías Disponibles
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for cat in categorias %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6>
+                                        <i class="{{ cat.icono }}"></i> {{ cat.nombre }}
+                                        <span class="badge bg-secondary">ID: {{ cat.ID_Categoria }}</span>
+                                    </h6>
+                                    <small class="text-muted">{{ cat.descripcion or 'Sin descripción' }}</small>
+                                    <hr>
+                                    <small>
+                                        <strong>Subcategorías actuales:</strong> {{ cat.subcategorias|length }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

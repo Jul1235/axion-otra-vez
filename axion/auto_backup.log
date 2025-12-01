@@ -1,0 +1,32 @@
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[2025-11-29 19:37:46] Ejecutando backup automático...
+Creando backup...
+[0;32m✓ Backup creado: axion_store_20251129_193746.sql (32K)[0m
+[0;32m✓ Backups antiguos limpiados (manteniendo últimos 7)[0m
+
+Backups disponibles:
+-rw-rw-r-- 1 user user 28K nov 29 02:37 axion_store_20251129_023716.sql
+-rw-rw-r-- 1 user user 28K nov 29 03:05 axion_store_20251129_030515.sql
+-rw-rw-r-- 1 user user 28K nov 29 15:07 axion_store_20251129_150729.sql
+-rw-rw-r-- 1 user user 28K nov 29 15:08 axion_store_20251129_150815.sql
+-rw-rw-r-- 1 user user 28K nov 29 15:45 axion_store_20251129_154509.sql
+-rw-rw-r-- 1 user user 30K nov 29 16:57 axion_store_20251129_165700.sql
+-rw-rw-r-- 1 user user 30K nov 29 20:09 axion_store_20251129_193746.sql
+[2025-11-29 20:09:58] ✓ Backup completado
+---
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m
+[0;34m[Auto-Backup] Servicio iniciado - Backup cada 2 horas[0m

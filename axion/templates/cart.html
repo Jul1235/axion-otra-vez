@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Axion Store - Carrito{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="display-4 fw-bold mb-4">
+        <i class="fas fa-shopping-cart"></i> Mi Carrito
+    </h1>
+    
+    {% if productos %}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card card-custom border-0 mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Productos en tu carrito</h5>
+                        <span class="badge bg-primary">{{ productos|length }} producto(s)</span>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="text-center">Precio Unit.</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-end">Subtotal</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in productos %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-box me-3 text-muted"></i>
+                                            <div>
+                                                <strong>{{ item.nombre }}</strong>
+                                                {% if item.stock_disponible <= 5 and item.stock_disponible > 0 %}
+                                                    <br><small class="stock-warning">
+                                                        <i class="fas fa-exclamation-triangle"></i> 
+                                                        Solo quedan {{ item.stock_disponible }}
+                                                    </small>
+                                                {% elif item.stock_disponible == 0 %}
+                                                    <br><small class="stock-danger">
+                                                        <i class="fas fa-times-circle"></i> 
+                                                        Agotado
+                                                    </small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">${{ "%.2f"|format(item.precio) }}</td>
+                                    <td class="text-center">
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <form method="POST" action="{{ url_for('update_cart_quantity', cart_id=item.ID_Carrito) }}" 
+                                                  class="d-flex align-items-center quantity-form">
+                                                <button type="button" class="btn btn-outline-secondary btn-sm quantity-btn" 
+                                                        data-action="decrease" data-cart-id="{{ item.ID_Carrito }}"
+                                                        {% if item.cantidad <= 1 %}disabled{% endif %}>
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                                
+                                                <input type="number" 
+                                                       name="cantidad" 
+                                                       value="{{ item.cantidad }}" 
+                                                       min="1" 
+                                                       max="{{ item.stock_disponible }}"
+                                                       class="form-control form-control-sm mx-2 quantity-input"
+                                                       data-cart-id="{{ item.ID_Carrito }}"
+                                                       onchange="this.form.submit()">
+                                                
+                                                <button type="button" class="btn btn-outline-secondary btn-sm quantity-btn" 
+                                                        data-action="increase" data-cart-id="{{ item.ID_Carrito }}"
+                                                        {% if item.cantidad >= item.stock_disponible %}disabled{% endif %}>
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                        <small class="text-muted d-block mt-1">
+                                            Máx: {{ item.stock_disponible }} unidades
+                                        </small>
+                                    </td>
+                                    <td class="text-end fw-bold">${{ "%.2f"|format(item.subtotal) }}</td>
+                                    <td class="text-center">
+                                        <a href="{{ url_for('remove_from_cart', cart_id=item.ID_Carrito) }}" 
+                                           class="btn btn-sm btn-danger remove-btn"
+                                           onclick="return confirm('¿Estás seguro de que quieres eliminar este producto del carrito?')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card card-custom border-0 cart-summary">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Resumen del Pedido</h5>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span class="fw-bold">${{ "%.2f"|format(total) }}</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Envío:</span>
+                        <span class="text-success fw-bold">Gratis</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="fs-5 fw-bold">Total:</span>
+                        <span class="fs-5 fw-bold text-primary">${{ "%.2f"|format(total) }}</span>
+                    </div>
+                    
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-wallet"></i> 
+                        Saldo disponible: <strong>${{ "%.2f"|format(saldo) }}</strong>
+                    </div>
+                    
+                    {% if saldo >= total %}
+                        <form method="POST" action="{{ url_for('comprar') }}">
+                            <button type="submit" class="btn btn-primary-custom btn-lg w-100 mb-3">
+                                <i class="fas fa-credit-card"></i> Proceder al Pago
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning mb-3">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Saldo insuficiente. Recarga tu wallet para completar la compra.
+                        </div>
+                        <a href="{{ url_for('wallet') }}" class="btn btn-warning btn-lg w-100 mb-3">
+                            <i class="fas fa-coins"></i> Recargar Saldo
+                        </a>
+                    {% endif %}
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('clear_cart') }}" 
+                           class="btn btn-outline-danger"
+                           onclick="return confirm('¿Estás seguro de que quieres vaciar todo el carrito?')">
+                            <i class="fas fa-trash"></i> Vaciar Carrito
+                        </a>
+                        
+                        <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Seguir Comprando
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% else %}
+    <div class="empty-cart">
+        <i class="fas fa-shopping-cart text-muted"></i>
+        <h3 class="text-muted mb-3">Tu carrito está vacío</h3>
+        <p class="mb-4">Agrega productos para comenzar tu compra</p>
+        <a href="{{ url_for('home') }}" class="btn btn-primary-custom btn-lg">
+            <i class="fas fa-store"></i> Ir a la Tienda
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Función para manejar los botones de cantidad
+    function handleQuantityChange(action, cartId) {
+        const input = document.querySelector(`.quantity-input[data-cart-id="${cartId}"]`);
+        let currentValue = parseInt(input.value);
+        const max = parseInt(input.max);
+        const min = parseInt(input.min);
+        
+        if (action === 'increase' && currentValue < max) {
+            input.value = currentValue + 1;
+            input.form.submit();
+        } else if (action === 'decrease' && currentValue > min) {
+            input.value = currentValue - 1;
+            input.form.submit();
+        }
+    }
+    
+    // Event listeners para los botones de cantidad
+    document.querySelectorAll('.quantity-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const action = this.getAttribute('data-action');
+            const cartId = this.getAttribute('data-cart-id');
+            handleQuantityChange(action, cartId);
+        });
+    });
+    
+    // Validación del input de cantidad
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('blur', function() {
+            const value = parseInt(this.value);
+            const max = parseInt(this.max);
+            const min = parseInt(this.min);
+            
+            if (isNaN(value) || value < min) {
+                this.value = min;
+            } else if (value > max) {
+                this.value = max;
+                alert(`Solo hay ${max} unidades disponibles de este producto`);
+            }
+        });
+        
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                this.blur();
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

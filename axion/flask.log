@@ -1,0 +1,297 @@
+==================================================
+INICIALIZANDO AXION STORE
+==================================================
+
+[1/3] Creando/verificando tablas en la base de datos...
+✓ Tablas creadas/verificadas exitosamente
+
+[2/3] Verificando conexión a la base de datos...
+✓ Conexión establecida correctamente
+
+[3/3] Verificando datos iniciales...
+✓ Ya existen productos en la base de datos
+
+==================================================
+✓ INICIALIZACIÓN COMPLETADA
+==================================================
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.2.0.2:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 358-110-192
+127.0.0.1 - - [01/Dec/2025 16:09:55] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:03] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:04] "GET /static/js/password-toggle.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:04] "GET /static/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:04] "GET /static/Marca/logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:04] "GET /static/js/autocomplete.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:04] "GET /static/js/notifications.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:04] "GET /static/js/skeletons.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:04] "GET /static/js/cart-inline.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:04] "GET /static/img/bg3.webp HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:04] "GET /static/img/bg1.webp HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:04] "GET /static/img/bg2.webp HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:05] "[32mGET /notifications/stream HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:10:05] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [01/Dec/2025 16:10:06] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:10] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:11] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:11] "GET /static/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:11] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:11] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:11] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:11] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:11] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:11] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [01/Dec/2025 16:10:11] "[32mGET /notifications/stream HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:10:12] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:25] "[32mPOST /login HTTP/1.1[0m" 302 -
+/home/user/Descargas/axion/app.py:659: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  usuario = Usuario.query.get(session['user_id'])
+/home/user/Descargas/axion/app.py:1478: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  hace_30_dias = datetime.utcnow() - timedelta(days=30)
+/home/user/Descargas/axion/app.py:1512: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow()
+127.0.0.1 - - [01/Dec/2025 16:10:25] "GET /admin HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:26] "GET /static/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:26] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:26] "GET /static/Marca/logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:26] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:26] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:26] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:26] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:27] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+/home/user/Descargas/axion/app.py:2448: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  hace_30_dias = datetime.utcnow() - timedelta(days=30)
+/home/user/Descargas/axion/app.py:2472: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  Usuario.ultima_actividad >= datetime.utcnow() - timedelta(days=1)
+127.0.0.1 - - [01/Dec/2025 16:10:32] "GET /admin/analytics HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:33] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:33] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:33] "GET /static/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:33] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:33] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:33] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:33] "GET /static/Marca/logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:39] "GET /home HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:40] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:40] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:40] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:40] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:40] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:40] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:41] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:42] "GET /notifications/stream HTTP/1.1" 200 -
+/home/user/Descargas/axion/app.py:388: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  usuario = Usuario.query.get(usuario_id)
+/home/user/Descargas/axion/app.py:405: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  usuario.dias_desde_ultima_compra = (datetime.utcnow() - usuario.ultimo_pedido_fecha).days
+/home/user/Descargas/axion/app.py:465: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  usuario.ultima_actividad = datetime.utcnow()
+/home/user/Descargas/axion/app.py:478: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  categoria = Categoria.query.get(categoria_id)
+/home/user/Descargas/axion/app.py:531: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  metricas.ultima_actualizacion = datetime.utcnow()
+/home/user/Descargas/axion/app.py:542: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  subcategoria = Subcategoria.query.get(subcategoria_id)
+/home/user/Descargas/axion/app.py:598: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  metricas.ultima_actualizacion = datetime.utcnow()
+/home/user/Descargas/axion/app.py:817: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  payload = {"message": data, "ts": datetime.utcnow().isoformat()}
+127.0.0.1 - - [01/Dec/2025 16:10:44] "GET /notifications/stream HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:44] "[32mGET /add_to_cart/9 HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:10:44] "GET /home HTTP/1.1" 200 -
+/home/user/Descargas/axion/app.py:892: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  producto = Producto.query.get(i.ID_Producto)
+127.0.0.1 - - [01/Dec/2025 16:10:46] "GET /cart HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:46] "GET /static/Marca/logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:46] "GET /static/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:47] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:47] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:47] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:47] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:47] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:47] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [01/Dec/2025 16:10:52] "GET /perfil HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:53] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:53] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:53] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:53] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:53] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:53] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:53] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:56] "GET /notifications/stream HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:57] "GET /home HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:10:58] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:58] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:58] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:58] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:58] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:58] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:10:58] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:02] "GET /notifications/stream HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:08] "GET /notifications/stream HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:09] "GET /admin HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:09] "GET /static/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:09] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:09] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:09] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:09] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:09] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:09] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:14] "GET /notifications/stream HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:15] "GET /admin/analytics HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:15] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:15] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:16] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:16] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:16] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:16] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:16] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+/home/user/Descargas/axion/app.py:2290: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  hace_30_dias = datetime.utcnow() - timedelta(days=30)
+[2025-12-01 16:11:24,591] ERROR in app: Error en detalle categoría: admin/analytics_categoria_detalle.html
+127.0.0.1 - - [01/Dec/2025 16:11:24] "[32mGET /admin/analytics/categoria/1 HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:11:24] "GET /admin/analytics HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:25] "GET /notifications/stream HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:25] "GET /static/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:25] "GET /static/Marca/logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:25] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:25] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:25] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:25] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:25] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:26] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [01/Dec/2025 16:11:31] "GET /notifications/stream HTTP/1.1" 200 -
+[2025-12-01 16:11:34,119] ERROR in app: Error en detalle categoría: admin/analytics_categoria_detalle.html
+127.0.0.1 - - [01/Dec/2025 16:11:34] "[32mGET /admin/analytics/categoria/1 HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:11:35] "GET /admin/analytics HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:36] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:36] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:36] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:36] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:36] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:36] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:36] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:36] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [01/Dec/2025 16:11:41] "GET /notifications/stream HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:51] "GET /notifications/stream HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:53] "GET /admin HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:53] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:53] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:54] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:54] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:54] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:54] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:54] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:57] "GET /admin/categorias HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:11:58] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:58] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:58] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:58] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:58] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:58] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:11:58] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:12:06] "[32mGET / HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:12:06] "GET /home HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:12:07] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:12:07] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:12:07] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:12:07] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:12:07] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:12:07] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:12:07] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:12:09] "GET /notifications/stream HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:12:14] "GET /notifications/stream HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:12:23] "GET /notifications/stream HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:09] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:10] "GET /static/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:10] "GET /static/js/notifications.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:10] "GET /static/Marca/logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:10] "GET /static/js/autocomplete.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:10] "GET /static/js/skeletons.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:10] "GET /static/js/password-toggle.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:10] "GET /static/js/cart-inline.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:11] "GET /static/img/bg2.webp HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:11] "GET /static/img/bg1.webp HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:11] "GET /static/img/bg3.webp HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:11] "[32mGET /notifications/stream HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:14:11] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:12] "GET /home HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:12] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:12] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:12] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:12] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:12] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:12] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:12] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:13] "[32mGET /notifications/stream HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:14:13] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [01/Dec/2025 16:14:13] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:15] "GET /home HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:16] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:16] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:16] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:16] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:16] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:16] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:16] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:16] "[32mGET /notifications/stream HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:14:17] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:17] "GET /home HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:18] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:18] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:18] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:18] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:18] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:18] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:18] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:18] "[32mGET /notifications/stream HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:14:19] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:21] "GET /home?categoria=6 HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:21] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:21] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:21] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:21] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:21] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:21] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:21] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:22] "[32mGET /notifications/stream HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:14:22] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:24] "GET /home?categoria=6 HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:25] "GET /home?categoria=6 HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:25] "GET /home?categoria=6 HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:25] "GET /static/js/skeletons.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:25] "GET /static/js/password-toggle.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:25] "GET /static/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:25] "GET /static/js/autocomplete.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:25] "GET /static/js/notifications.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:25] "GET /static/js/cart-inline.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:25] "GET /static/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:26] "[32mGET /notifications/stream HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:14:26] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:27] "GET /home HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:28] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:28] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:28] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:28] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:28] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:28] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:28] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:29] "[32mGET /notifications/stream HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:14:29] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:32] "GET /home HTTP/1.1" 200 -
+127.0.0.1 - - [01/Dec/2025 16:14:33] "[36mGET /static/Marca/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:33] "[36mGET /static/js/password-toggle.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:33] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:33] "[36mGET /static/js/notifications.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:33] "[36mGET /static/js/skeletons.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:33] "[36mGET /static/js/autocomplete.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:33] "[36mGET /static/js/cart-inline.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Dec/2025 16:14:33] "[32mGET /notifications/stream HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Dec/2025 16:14:34] "GET /login HTTP/1.1" 200 -

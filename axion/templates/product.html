@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}{{ producto.nombre }} - Axion Store{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card card-custom">
+        <div class="card-body text-center">
+          {% if producto.imagen %}
+            <div class="product-image-zoom-wrapper" style="display:inline-block;position:relative;">
+              <img id="product-main-image" src="{{ url_for('static', filename=producto.imagen) }}" alt="{{ producto.nombre }}" class="img-fluid" style="max-height:420px; object-fit:contain; cursor:zoom-in;" onerror="this.src='https://via.placeholder.com/600x400?text=Imagen+No+Disponible'">
+              <div id="img-magnifier" style="display:none; position:absolute; pointer-events:none; border:1px solid rgba(0,0,0,0.1); box-shadow:0 6px 18px rgba(0,0,0,0.15); border-radius:6px; background-repeat:no-repeat; z-index:1050;"></div>
+            </div>
+          {% else %}
+            <i class="fas fa-image fa-7x text-muted"></i>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h2 class="fw-bold">{{ producto.nombre }}</h2>
+      <p class="text-muted mb-1">
+        {% if categoria %}
+          <small class="badge bg-primary"><i class="{{ categoria.icono }}"></i> {{ categoria.nombre }}</small>
+        {% endif %}
+        {% if subcategoria %}
+          <small class="badge bg-secondary ms-1">{{ subcategoria.nombre }}</small>
+        {% endif %}
+      </p>
+
+      <h3 class="text-primary mt-3">${{ "%.2f"|format(producto.precio) }}</h3>
+
+      {% if producto.disponible and producto.stock > 0 %}
+        <p class="text-success">Stock: {{ producto.stock }} unidades</p>
+        <a href="{{ url_for('add_to_cart', producto_id=producto.ID_Producto) }}" class="btn btn-primary-custom btn-lg w-100">
+          <i class="fas fa-cart-plus"></i> Agregar al carrito
+        </a>
+      {% else %}
+        <p class="text-danger">Producto no disponible</p>
+        <button class="btn btn-secondary w-100" disabled><i class="fas fa-ban"></i> No disponible</button>
+      {% endif %}
+
+      <hr>
+      <h5>Descripción</h5>
+      <p class="text-muted">{{ producto.descripcion or 'No hay descripción disponible.' }}</p>
+
+      {% if related_products %}
+      <hr>
+      <h5>Productos relacionados</h5>
+      <div class="row g-3 mt-2">
+          {% for rp in related_products %}
+          <div class="col-6 col-md-4">
+              <div class="card card-custom h-100">
+                  <a href="{{ url_for('product_detail', producto_id=rp.ID_Producto) }}">
+                    {% if rp.imagen %}
+                      <img src="{{ url_for('static', filename=rp.imagen) }}" loading="lazy" class="img-fluid" style="height:120px;object-fit:contain;" alt="{{ rp.nombre }}">
+                    {% else %}
+                      <div class="d-flex align-items-center justify-content-center" style="height:120px;background:#f5f5f5;"><i class="fas fa-image text-muted"></i></div>
+                    {% endif %}
+                  </a>
+                  <div class="card-body p-2">
+                      <a href="{{ url_for('product_detail', producto_id=rp.ID_Producto) }}" class="text-decoration-none text-reset">
+                        <div class="small fw-bold">{{ rp.nombre }}</div>
+                      </a>
+                      <div class="small text-muted">${{ "%.2f"|format(rp.precio) }}</div>
+                  </div>
+              </div>
+          </div>
+          {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+  {% block extra_js %}
+  <style>
+    /* Estilos del magnificador */
+    #img-magnifier {
+      width: 220px;
+      height: 220px;
+      background-size: 800px 800px; /* se ajustará dinámicamente */
+      transition: opacity 0.12s ease;
+      opacity: 0.98;
+    }
+
+    /* Modal image container tweaks */
+    .zoom-modal-img {
+      cursor: grab;
+      touch-action: none;
+      max-width: 100%;
+      max-height: 80vh;
+      transform-origin: 0 0;
+    }
+  </style>
+
+  <!-- Modal para vista ampliada con pan/zoom -->
+  <div class="modal fade" id="zoomModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ producto.nombre }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <img id="zoom-modal-image" src="{{ url_for('static', filename=producto.imagen) }}" alt="{{ producto.nombre }}" class="zoom-modal-img" />
+        </div>
+        <div class="modal-footer">
+          <small class="text-muted me-auto">Usa la rueda del ratón para acercar/alejar. Arrastra para desplazar.</small>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const img = document.getElementById('product-main-image');
+    const magnifier = document.getElementById('img-magnifier');
+    const wrapper = document.querySelector('.product-image-zoom-wrapper');
+
+    if (img && magnifier && wrapper) {
+      let zoom = 2.2; // factor de zoom del lente
+      let imgNaturalW = 0, imgNaturalH = 0;
+
+      // Cuando la imagen cargue, establecemos background-size
+      function refreshNatural() {
+        imgNaturalW = img.naturalWidth || img.width;
+        imgNaturalH = img.naturalHeight || img.height;
+        magnifier.style.backgroundImage = `url(${img.src})`;
+        magnifier.style.backgroundSize = `${imgNaturalW * zoom}px ${imgNaturalH * zoom}px`;
+      }
+
+      if (img.complete) refreshNatural();
+      img.addEventListener('load', refreshNatural);
+
+      // Movimientos del ratón para actualizar pos del lente
+      function onMove(e) {
+        const rect = img.getBoundingClientRect();
+        const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+        const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+        if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+          magnifier.style.display = 'none';
+          return;
+        }
+        magnifier.style.display = '';
+        const magW = magnifier.offsetWidth;
+        const magH = magnifier.offsetHeight;
+        const percentX = x / rect.width;
+        const percentY = y / rect.height;
+
+        // posicion del magnifier dentro del wrapper (mantener centrado en cursor)
+        const left = Math.max(0, Math.min(rect.width - magW, x - magW / 2));
+        const top = Math.max(0, Math.min(rect.height - magH, y - magH / 2));
+        magnifier.style.left = left + 'px';
+        magnifier.style.top = top + 'px';
+
+        // background-position calculado sobre la imagen natural y el factor zoom
+        const bgX = Math.round((imgNaturalW * percentX * zoom) - magW / 2);
+        const bgY = Math.round((imgNaturalH * percentY * zoom) - magH / 2);
+        magnifier.style.backgroundPosition = `-${bgX}px -${bgY}px`;
+      }
+
+      // Mostrar lente al mover y ocultar cuando sale
+      wrapper.addEventListener('mouseenter', function(e) {
+        magnifier.style.display = '';
+      });
+      wrapper.addEventListener('mousemove', onMove);
+      wrapper.addEventListener('touchmove', onMove, { passive: true });
+      wrapper.addEventListener('mouseleave', function() { magnifier.style.display = 'none'; });
+
+      // Clic abre modal con zoom y drag
+      wrapper.addEventListener('click', function() {
+        const modalEl = document.getElementById('zoomModal');
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+      });
+
+      // Modal: manejo zoom con rueda y arrastre
+      (function setupModalZoom() {
+        const modalImg = document.getElementById('zoom-modal-image');
+        let scale = 1;
+        let originX = 0, originY = 0;
+        let isPanning = false;
+        let startX = 0, startY = 0;
+        let translateX = 0, translateY = 0;
+
+        function applyTransform() {
+          modalImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        }
+
+        modalImg.addEventListener('wheel', function(e) {
+          e.preventDefault();
+          const delta = -e.deltaY;
+          const factor = delta > 0 ? 1.08 : 0.92;
+          const prevScale = scale;
+          scale = Math.min(6, Math.max(1, scale * factor));
+
+          // ajustar translate para zoom relativo al cursor
+          const rect = modalImg.getBoundingClientRect();
+          const cx = e.clientX - rect.left;
+          const cy = e.clientY - rect.top;
+          // calcular cambio en escala y ajustar translate
+          translateX -= (cx - translateX) * (scale / prevScale - 1);
+          translateY -= (cy - translateY) * (scale / prevScale - 1);
+          applyTransform();
+        }, { passive: false });
+
+        modalImg.addEventListener('pointerdown', function(e) {
+          if (scale <= 1) return;
+          isPanning = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          modalImg.style.cursor = 'grabbing';
+          modalImg.setPointerCapture(e.pointerId);
+        });
+
+        modalImg.addEventListener('pointermove', function(e) {
+          if (!isPanning) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          startX = e.clientX; startY = e.clientY;
+          translateX += dx;
+          translateY += dy;
+          applyTransform();
+        });
+
+        modalImg.addEventListener('pointerup', function(e) {
+          isPanning = false;
+          modalImg.style.cursor = 'grab';
+          try { modalImg.releasePointerCapture(e.pointerId); } catch (err) {}
+        });
+
+        // Reset transform when modal hides
+        const modalEl = document.getElementById('zoomModal');
+        modalEl.addEventListener('hidden.bs.modal', function() {
+          scale = 1; translateX = 0; translateY = 0; applyTransform();
+        });
+      })();
+    }
+  });
+  </script>
+  {% endblock %}

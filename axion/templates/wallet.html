@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Axion Store - Mi Wallet{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/wallet.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Header de la Wallet -->
+    <div class="wallet-header">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-wallet"></i> Mi Wallet
+                </h1>
+                <p class="lead mb-0">Gestiona tu saldo y realiza recargas</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="wallet-balance">${{ "%.2f"|format(wallet.saldo) }}</div>
+                <small class="opacity-75">Saldo actual</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Sección de Recarga -->
+        <div class="col-lg-8">
+            <div class="card wallet-card mb-4">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-4">
+                        <i class="fas fa-plus-circle text-primary"></i> Recargar Saldo
+                    </h3>
+
+                    <!-- Opciones de recarga rápida -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Recarga Rápida</label>
+                        <div class="recarga-options" id="recargaOpciones">
+                            <div class="recarga-option" data-monto="10">
+                                <div class="recarga-amount">$10</div>
+                                <div class="recarga-bonus">+$0 bonus</div>
+                            </div>
+                            <div class="recarga-option" data-monto="20">
+                                <div class="recarga-amount">$20</div>
+                                <div class="recarga-bonus">+$0 bonus</div>
+                            </div>
+                            <div class="recarga-option" data-monto="50">
+                                <div class="recarga-amount">$50</div>
+                                <div class="recarga-bonus">+$5 bonus</div>
+                            </div>
+                            <div class="recarga-option" data-monto="100">
+                                <div class="recarga-amount">$100</div>
+                                <div class="recarga-bonus">+$15 bonus</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monto personalizado -->
+                    <div class="custom-amount">
+                        <label for="montoPersonalizado" class="form-label fw-bold">Monto Personalizado</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text">$</span>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="montoPersonalizado"
+                                   name="monto"
+                                   min="1" 
+                                   max="10000" 
+                                   step="0.01"
+                                   placeholder="0.00"
+                                   required>
+                        </div>
+                        <div class="form-text">
+                            Ingresa un monto entre $1 y $10,000
+                        </div>
+                    </div>
+
+                    <!-- Información de límites -->
+                    <div class="limites-info">
+                        <h6 class="fw-bold mb-2">
+                            <i class="fas fa-info-circle"></i> Información Importante
+                        </h6>
+                        <ul class="mb-0">
+                            <li>Mínimo de recarga: $1</li>
+                            <li>Máximo de recarga: $10,000</li>
+                            <li>Las recargas se procesan instantáneamente</li>
+                            <li>El saldo no tiene fecha de expiración</li>
+                        </ul>
+                    </div>
+
+                    <!-- Botón de recarga -->
+                    <form method="POST" action="{{ url_for('recargar_saldo') }}" id="recargaForm">
+                        <input type="hidden" name="monto" id="montoFinal">
+                        <button type="submit" class="btn btn-primary-custom btn-lg w-100 mt-4 recarga-btn">
+                            <i class="fas fa-bolt"></i> Recargar Wallet
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información Adicional -->
+        <div class="col-lg-4">
+            <!-- Beneficios -->
+            <div class="card wallet-card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="fas fa-gift text-primary"></i> Beneficios
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Compras más rápidas
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Pago seguro integrado
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Control de gastos
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Historial de transacciones
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Acciones Rápidas -->
+            <div class="card wallet-card">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="fas fa-rocket text-primary"></i> Acciones Rápidas
+                    </h5>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('home') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-shopping-bag"></i> Ir de Compras
+                        </a>
+                        <a href="{{ url_for('historial') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-history"></i> Ver Historial
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const opcionesRecarga = document.querySelectorAll('.recarga-option');
+    const inputMonto = document.getElementById('montoPersonalizado');
+    const montoFinal = document.getElementById('montoFinal');
+    const formRecarga = document.getElementById('recargaForm');
+
+    // Manejar selección de opciones de recarga rápida
+    opcionesRecarga.forEach(opcion => {
+        opcion.addEventListener('click', function() {
+            // Remover selección anterior
+            opcionesRecarga.forEach(o => o.classList.remove('selected'));
+            
+            // Seleccionar actual
+            this.classList.add('selected');
+            
+            // Establecer monto
+            const monto = this.getAttribute('data-monto');
+            inputMonto.value = monto;
+            montoFinal.value = monto;
+        });
+    });
+
+    // Actualizar monto final cuando cambia el input
+    inputMonto.addEventListener('input', function() {
+        montoFinal.value = this.value;
+        
+        // Remover selección de opciones rápidas si se ingresa monto manual
+        if (this.value) {
+            opcionesRecarga.forEach(o => o.classList.remove('selected'));
+        }
+    });
+
+    // Validación del formulario
+    formRecarga.addEventListener('submit', function(e) {
+        const monto = parseFloat(montoFinal.value);
+        
+        if (!monto || monto < 1) {
+            e.preventDefault();
+            alert('Por favor ingresa un monto válido (mínimo $1)');
+            return;
+        }
+        
+        if (monto > 10000) {
+            e.preventDefault();
+            alert('El monto máximo de recarga es $10,000');
+            return;
+        }
+        
+        // Confirmación de recarga
+        if (!confirm(`¿Estás seguro de que quieres recargar $${monto.toFixed(2)} a tu wallet?`)) {
+            e.preventDefault();
+            return;
+        }
+        
+        // Mostrar loading
+        const btn = this.querySelector('button[type="submit"]');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+        btn.disabled = true;
+    });
+
+    // Seleccionar primera opción por defecto
+    if (opcionesRecarga.length > 0) {
+        opcionesRecarga[0].click();
+    }
+});
+</script>
+{% endblock %}
