@@ -1,0 +1,13 @@
+find . \
+    \( -path "./venv" -o -path "./__pycache__" -o -path "./static/img" -o -path "./templates/img" \) -prune \
+    -o \
+    -type f \
+    \( -name "*.js" -o -name "*.css" -o -name "*.html" -o -name "*.py" \) \
+    -not -name "auto_backup.sh" \
+    -not -name "backup.sh" \
+    -not -name "start.sh" \
+    -not -name "status.sh" \
+    -not -name "stop.sh" \
+    -not -name "ver_backups.sh" \
+    -print0 | \
+xargs -0 -I {} sh -c 'echo "--- Archivo: {} ---" >> codigo_combinado_axion.txt; cat "{}" >> codigo_combinado_axion.txt; echo "" >> codigo_combinado_axion.txt'

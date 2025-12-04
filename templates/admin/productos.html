@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Productos - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-box"></i> Gestión de Productos</h2>
+        <div>
+            <a href="{{ url_for('admin_agregar_producto') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Nuevo Producto
+            </a>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    {% if productos %}
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th width="50">ID</th>
+                            <th width="80">Imagen</th>
+                            <th>Nombre</th>
+                            <th width="200">Categoría</th>
+                            <th width="100">Precio</th>
+                            <th width="80">Stock</th>
+                            <th width="100">Disponible</th>
+                            <th width="150">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for producto in productos %}
+                        <tr>
+                            <td>{{ producto.ID_Producto }}</td>
+                            <td>
+                                {% if producto.imagen %}
+                                <img src="{{ url_for('static', filename=producto.imagen) }}" 
+                                     style="width: 50px; height: 50px; object-fit: cover;"
+                                     onerror="this.innerHTML='<i class=\'fas fa-image text-muted\'></i>'">
+                                {% else %}
+                                <i class="fas fa-image text-muted"></i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <strong>{{ producto.nombre }}</strong>
+                            </td>
+                            <td>
+                                {% if producto.categoria %}
+                                    <span class="badge bg-primary">
+                                        <i class="{{ producto.categoria.icono }}"></i>
+                                        {{ producto.categoria.nombre }}
+                                    </span>
+                                    {% if producto.subcategoria %}
+                                    <br>
+                                    <small class="badge bg-secondary mt-1">
+                                        {{ producto.subcategoria.nombre }}
+                                    </small>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Sin categoría</span>
+                                {% endif %}
+                            </td>
+                            <td><strong>${{ "%.2f"|format(producto.precio) }}</strong></td>
+                            <td>
+                                {% if producto.stock == 0 %}
+                                <span class="badge bg-danger">{{ producto.stock }}</span>
+                                {% elif producto.stock < 10 %}
+                                <span class="badge bg-warning text-dark">{{ producto.stock }}</span>
+                                {% else %}
+                                <span class="badge bg-success">{{ producto.stock }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if producto.disponible %}
+                                <span class="badge bg-success">Sí</span>
+                                {% else %}
+                                <span class="badge bg-danger">No</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('admin_editar_producto', producto_id=producto.ID_Producto) }}" 
+                                   class="btn btn-sm btn-primary" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ url_for('admin_eliminar_producto', producto_id=producto.ID_Producto) }}" 
+                                   class="btn btn-sm btn-danger"
+                                   onclick="return confirm('¿Eliminar \'{{ producto.nombre }}\'?')"
+                                   title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <p class="text-muted">
+            <strong>Total de productos:</strong> {{ productos|length }}
+        </p>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center py-5">
+        <i class="fas fa-box-open fa-3x mb-3"></i>
+        <h4>No hay productos registrados</h4>
+        <p>Comienza agregando tu primer producto.</p>
+        <a href="{{ url_for('admin_agregar_producto') }}" class="btn btn-success btn-lg mt-3">
+            <i class="fas fa-plus"></i> Agregar Primer Producto
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

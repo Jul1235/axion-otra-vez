@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Historial de Acciones{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-history"></i> Historial de Acciones</h1>
+    <div>
+      <button id="clear-history" class="btn btn-sm btn-outline-danger">Borrar historial</button>
+    </div>
+  </div>
+
+  <div id="history-list" class="list-group">
+    <div class="text-muted">Cargando historial...</div>
+  </div>
+
+  <p class="text-muted mt-3 small">Se registran hasta las últimas 10 acciones por usuario en el navegador. Incluye: agregar al carrito, wishlist, mover al carrito, etc.</p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/action-history.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const list = document.getElementById('history-list');
+  // If server_actions were passed by the server render them first
+  const serverActions = {{ server_actions|tojson or 'null' }};
+  function renderServer(actions){
+    if (!actions || actions.length === 0) return false;
+    list.innerHTML = '';
+    actions.forEach(it => {
+      const el = document.createElement('div');
+      el.className = 'list-group-item d-flex justify-content-between align-items-start';
+      const left = document.createElement('div');
+      left.innerHTML = `<div><strong>${it.accion || ''}</strong> ${it.nombre ? ' - ' + it.nombre : ''}</div><div class="small text-muted">${it.fecha ? new Date(it.fecha).toLocaleString() : ''}</div>`;
+      el.appendChild(left);
+      list.appendChild(el);
+    });
+    return true;
+  }
+
+  if (!renderServer(serverActions)) {
+    // fallback to client-side localStorage history
+    const items = (window.getUserActionHistory && window.getUserActionHistory()) || [];
+    if (!items || items.length === 0) {
+      list.innerHTML = '<div class="text-muted">No hay acciones registradas</div>';
+    } else {
+      list.innerHTML = '';
+      items.forEach(it => {
+        const el = document.createElement('div');
+        el.className = 'list-group-item d-flex justify-content-between align-items-start';
+        const left = document.createElement('div');
+        left.innerHTML = `<div><strong>${it.action || ''}</strong> ${it.nombre ? ' - ' + it.nombre : ''}</div><div class="small text-muted">${new Date(it.ts || Date.now()).toLocaleString()}</div>`;
+        el.appendChild(left);
+        list.appendChild(el);
+      });
+    }
+  }
+
+  document.getElementById('clear-history').addEventListener('click', function(){
+    if (!confirm('¿Borrar historial de acciones local? Esto solo afectará a este dispositivo.')) return;
+    try { localStorage.removeItem('axion_action_history_v1'); render(); } catch(e){ console.error(e); }
+  });
+});
+</script>
+{% endblock %}

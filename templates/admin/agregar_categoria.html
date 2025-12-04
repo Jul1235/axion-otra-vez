@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block title %}Nueva Categoría - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-plus-circle"></i> Crear Nueva Categoría
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('admin_agregar_categoria') }}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Nombre de la Categoría *
+                            </label>
+                            <input type="text" 
+                                   name="nombre" 
+                                   class="form-control" 
+                                   placeholder="Ej: Componentes PC, Periféricos, Monitores"
+                                   required
+                                   maxlength="100">
+                            <small class="text-muted">Debe ser único</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea name="descripcion" 
+                                      class="form-control" 
+                                      rows="3"
+                                      placeholder="Descripción breve de la categoría"></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        Icono (Font Awesome)
+                                        <a href="https://fontawesome.com/icons" target="_blank" class="text-muted">
+                                            <i class="fas fa-external-link-alt"></i>
+                                        </a>
+                                    </label>
+                                    <input type="text" 
+                                           name="icono" 
+                                           class="form-control" 
+                                           value="fa-box" 
+                                           placeholder="fa-desktop">
+                                    <small class="text-muted">
+                                        Ejemplos: fa-desktop, fa-keyboard, fa-microchip, fa-hdd
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        Orden de visualización
+                                    </label>
+                                    <input type="number" 
+                                           name="orden" 
+                                           class="form-control" 
+                                           value="0"
+                                           min="0">
+                                    <small class="text-muted">
+                                        Menor número = aparece primero
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" 
+                                   type="checkbox" 
+                                   name="activa" 
+                                   id="activa" 
+                                   checked>
+                            <label class="form-check-label" for="activa">
+                                <strong>Categoría activa</strong>
+                                <br>
+                                <small class="text-muted">
+                                    Las categorías inactivas no se muestran en la tienda
+                                </small>
+                            </label>
+                        </div>
+
+                        <hr>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Nota:</strong> Después de crear la categoría, podrás agregar subcategorías.
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-save"></i> Crear Categoría
+                            </button>
+                            <a href="{{ url_for('admin_categorias') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Panel de ayuda -->
+            <div class="card shadow mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Sugerencias</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Iconos populares de Font Awesome:</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-microchip"></i> <code>fa-microchip</code> - Componentes</li>
+                                <li><i class="fas fa-keyboard"></i> <code>fa-keyboard</code> - Periféricos</li>
+                                <li><i class="fas fa-desktop"></i> <code>fa-desktop</code> - Monitores</li>
+                                <li><i class="fas fa-hdd"></i> <code>fa-hdd</code> - Almacenamiento</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-headphones"></i> <code>fa-headphones</code> - Audio</li>
+                                <li><i class="fas fa-fan"></i> <code>fa-fan</code> - Refrigeración</li>
+                                <li><i class="fas fa-bolt"></i> <code>fa-bolt</code> - Fuentes</li>
+                                <li><i class="fas fa-box"></i> <code>fa-box</code> - Gabinetes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

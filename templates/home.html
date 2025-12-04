@@ -1,0 +1,574 @@
+{% extends "base.html" %}
+
+{% block title %}Axion Store - Productos{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-card {
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .product-image-container {
+        position: relative;
+        background: var(--ps-card);
+        border-radius: 8px 8px 0 0;
+        padding: 1rem;
+    }
+    
+    .product-image {
+        max-height: 200px;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+    
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+    
+    .product-placeholder {
+        opacity: 0.5;
+    }
+    
+    /* Botón Wishlist */
+    .btn-wishlist {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.95);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        text-decoration: none;
+    }
+    
+    .btn-wishlist:hover {
+        background: #dc3545;
+        transform: scale(1.1);
+    }
+    
+    .btn-wishlist:hover i {
+        color: #fff !important;
+    }
+    
+    .btn-wishlist i {
+        color: #dc3545;
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+    }
+    
+    .btn-wishlist.in-wishlist {
+        /* keep button background subtle and show red heart icon */
+        background: rgba(255,255,255,0.95);
+    }
+    
+    .btn-wishlist.in-wishlist i {
+        color: #dc3545 !important;
+    }
+    
+    /* Estados de stock */
+    .out-of-stock {
+        opacity: 0.7;
+    }
+    
+    .out-of-stock-overlay,
+    .stock-warning-overlay {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 10;
+    }
+    
+    .out-of-stock-overlay .badge,
+    .stock-warning-overlay .badge {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .badge-available {
+        background: var(--success);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+    }
+    
+    .badge-unavailable {
+        background: var(--danger);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+    }
+
+    /* Sidebar de categorías */
+    .list-group-item.active {
+        background-color: #007bff;
+        border-color: #007bff;
+        font-weight: 600;
+    }
+    
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .list-group-item.active:hover {
+        background-color: #0056b3;
+    }
+    
+    .list-group-item.ps-5 {
+        background-color: #f8f9fa;
+        border-left: 3px solid #007bff;
+    }
+    
+    .list-group-item.ps-5.active {
+        background-color: #007bff;
+        color: white;
+    }
+    
+    .breadcrumb {
+        background-color: var(--ps-bg);
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+    }
+    
+    /* Modo oscuro para sidebar */
+    .dark-mode .list-group-item {
+        background-color: var(--ps-card);
+        color: var(--ps-text);
+        border-color: rgba(255,255,255,0.1);
+    }
+    
+    .dark-mode .list-group-item:hover {
+        background-color: rgba(255,255,255,0.05);
+    }
+    
+    .dark-mode .list-group-item.active {
+        background-color: var(--ps-accent);
+        border-color: var(--ps-accent);
+    }
+    
+    .dark-mode .product-image-container {
+        background: var(--ps-card);
+    }
+    
+    .dark-mode .btn-wishlist {
+        background: rgba(35, 35, 67, 0.95);
+    }
+    
+    .dark-mode .btn-wishlist i {
+        color: #ff6b6b;
+    }
+    
+    .dark-mode .btn-wishlist:hover {
+        background: #dc3545;
+    }
+    
+    @media (max-width: 768px) {
+        .product-card:hover {
+            transform: none;
+        }
+        
+        .card-title {
+            font-size: 1.1rem;
+        }
+        
+        .price {
+            font-size: 1.5rem;
+        }
+        
+        .sticky-top {
+            position: relative !important;
+        }
+    }
+    
+    .col {
+        animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-5">
+    <div class="row">
+        <!-- NOTE: Sidebar duplicated previously; using a single sidebar controlled by order classes for mobile -->
+
+        <!-- SIDEBAR DE CATEGORÍAS (moved after main in DOM, but displayed left on lg) -->
+        <div class="col-lg-3 col-md-4 mb-4 order-3 order-lg-1">
+            <div class="card card-custom border-0 sticky-top" style="top: 20px;">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-filter"></i> Categorías
+                    </h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{{ url_for('home') }}" 
+                       class="list-group-item list-group-item-action {% if not categoria_actual %}active{% endif %}">
+                        <i class="fas fa-th"></i> Todas las categorías
+                    </a>
+                    
+                    {% if productos_sin_categoria > 0 %}
+                    <a href="{{ url_for('home', categoria=-1) }}" 
+                       class="list-group-item list-group-item-action {% if categoria_actual == -1 %}active{% endif %}">
+                        <i class="fas fa-question-circle"></i> Sin categoría
+                        <span class="badge bg-warning text-dark float-end">{{ productos_sin_categoria }}</span>
+                    </a>
+                    {% endif %}
+                    
+                    {% for categoria in categorias %}
+                    <a href="{{ url_for('home', categoria=categoria.ID_Categoria) }}" 
+                       class="list-group-item list-group-item-action {% if categoria_actual == categoria.ID_Categoria %}active{% endif %}">
+                        <i class="{{ categoria.icono or 'fas fa-box' }}"></i> {{ categoria.nombre }}
+                        <span class="badge bg-secondary float-end">{{ categoria.productos|length }}</span>
+                    </a>
+                    
+                    {% if categoria_actual == categoria.ID_Categoria and categoria.subcategorias %}
+                        {% for sub in categoria.subcategorias if sub.activa %}
+                        <a href="{{ url_for('home', categoria=categoria.ID_Categoria, subcategoria=sub.ID_Subcategoria) }}" 
+                           class="list-group-item list-group-item-action ps-5 {% if subcategoria_actual == sub.ID_Subcategoria %}active{% endif %}"
+                           style="font-size: 0.9em;">
+                            <i class="fas fa-angle-right"></i> {{ sub.nombre }}
+                            <span class="badge bg-info float-end">{{ sub.productos|length }}</span>
+                        </a>
+                        {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <!-- Enlace rápido a Wishlist -->
+                {% if session.get('user_id') %}
+                <div class="card-footer">
+                    <a href="{{ url_for('wishlist') }}" class="btn btn-outline-danger w-100">
+                        <i class="fas fa-heart"></i> Mi Lista de Deseos
+                        {% if wishlist_count and wishlist_count > 0 %}
+                        <span id="sidebar-wishlist-count" class="badge bg-danger">{{ wishlist_count }}</span>
+                        {% endif %}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="col-lg-9 col-md-8 order-1 order-lg-2">
+            <!-- Breadcrumb -->
+            {% if categoria_actual or subcategoria_actual or search_query %}
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Inicio</a></li>
+                    {% if categoria_actual and categoria_actual != -1 %}
+                        {% for cat in categorias if cat.ID_Categoria == categoria_actual %}
+                        <li class="breadcrumb-item {% if not subcategoria_actual %}active{% endif %}">
+                            {% if subcategoria_actual %}
+                            <a href="{{ url_for('home', categoria=cat.ID_Categoria) }}">{{ cat.nombre }}</a>
+                            {% else %}
+                            {{ cat.nombre }}
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    {% elif categoria_actual == -1 %}
+                        <li class="breadcrumb-item active">Sin categoría</li>
+                    {% endif %}
+                    {% if subcategoria_actual %}
+                        {% for cat in categorias if cat.ID_Categoria == categoria_actual %}
+                            {% for sub in cat.subcategorias if sub.ID_Subcategoria == subcategoria_actual %}
+                            <li class="breadcrumb-item active">{{ sub.nombre }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                    {% if search_query %}
+                    <li class="breadcrumb-item active">Búsqueda: "{{ search_query }}"</li>
+                    {% endif %}
+                </ol>
+            </nav>
+            {% endif %}
+
+            <!-- Barra de Búsqueda y Filtros -->
+            <div class="card card-custom border-0 mb-4">
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('home') }}" class="row g-3 align-items-end">
+                        {% if categoria_actual %}
+                        <input type="hidden" name="categoria" value="{{ categoria_actual }}">
+                        {% endif %}
+                        {% if subcategoria_actual %}
+                        <input type="hidden" name="subcategoria" value="{{ subcategoria_actual }}">
+                        {% endif %}
+                        
+                        <div class="col-md-4">
+                            <label for="search" class="form-label">
+                                <i class="fas fa-search"></i> Buscar productos
+                            </label>
+                            <input type="text" 
+                                class="form-control" 
+                                id="search" 
+                                name="search" 
+                                data-autocomplete="product"
+                                placeholder="Nombre del producto..."
+                                value="{{ search_query }}">
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <label for="sort" class="form-label">
+                                <i class="fas fa-sort"></i> Ordenar por
+                            </label>
+                            <select class="form-select" id="sort" name="sort" onchange="this.form.submit()">
+                                <option value="nombre" {% if sort_by == 'nombre' %}selected{% endif %}>Nombre (A-Z)</option>
+                                <option value="precio_asc" {% if sort_by == 'precio_asc' %}selected{% endif %}>Precio (Menor a Mayor)</option>
+                                <option value="precio_desc" {% if sort_by == 'precio_desc' %}selected{% endif %}>Precio (Mayor a Menor)</option>
+                                <option value="stock" {% if sort_by == 'stock' %}selected{% endif %}>Disponibilidad</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary-custom w-100">
+                                <i class="fas fa-filter"></i> Aplicar Filtros
+                            </button>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <a href="{{ url_for('home') }}" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-refresh"></i> Limpiar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Resultados -->
+            {% if search_query %}
+            <div class="alert alert-info mb-4">
+                <i class="fas fa-info-circle"></i> 
+                Resultados para: <strong>"{{ search_query }}"</strong> 
+                - {{ productos.total if productos.total is defined else productos|length }} producto(s)
+            </div>
+            {% endif %}
+
+            {% if categoria_actual or subcategoria_actual %}
+            <div class="alert alert-success mb-4">
+                <i class="fas fa-filter"></i> 
+                Filtrando por: 
+                {% if categoria_actual and categoria_actual != -1 %}
+                    {% for cat in categorias if cat.ID_Categoria == categoria_actual %}
+                    <strong><i class="{{ cat.icono }}"></i> {{ cat.nombre }}</strong>
+                    {% endfor %}
+                    {% if subcategoria_actual %}
+                        {% for cat in categorias if cat.ID_Categoria == categoria_actual %}
+                            {% for sub in cat.subcategorias if sub.ID_Subcategoria == subcategoria_actual %}
+                            → <strong>{{ sub.nombre }}</strong>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                {% elif categoria_actual == -1 %}
+                    <strong>Sin categoría</strong>
+                {% endif %}
+                <a href="{{ url_for('home') }}" class="btn btn-sm btn-outline-success ms-2">
+                    <i class="fas fa-times"></i> Quitar filtro
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Grid de Productos -->
+            {% if productos %}
+            <div class="row row-cols-2 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for producto in productos %}
+                <div class="col">
+                    <div class="card card-custom h-100 border-0 product-card {% if not producto.disponible or producto.stock <= 0 %}out-of-stock{% endif %}" data-product-url="{{ url_for('product_detail', producto_id=producto.ID_Producto) }}">
+                        <div class="text-center product-image-container">
+                            <!-- ✅ BOTÓN WISHLIST -->
+                                     {% if session.get('user_id') %}
+                            {# Show interactive wishlist button; mark as in-wishlist if present in injected set #}
+                            {% set in_wl = (producto.ID_Producto in user_wishlist_ids) %}
+                            <a href="#" 
+                               class="btn-wishlist {% if in_wl %}in-wishlist{% endif %}" 
+                               data-product-id="{{ producto.ID_Producto }}"
+                                         data-product-name="{{ producto.nombre }}"
+                               data-in-wishlist="{{ '1' if in_wl else '0' }}"
+                               title="Agregar a favoritos">
+                                <i class="{{ 'fas fa-heart' if in_wl else 'far fa-heart' }}"></i>
+                            </a>
+                            {% endif %}
+                            
+                            {% if producto.imagen %}
+                                <a href="{{ url_for('product_detail', producto_id=producto.ID_Producto) }}">
+                                    <img src="{{ producto.imagen|static_or_placeholder(300) }}" loading="lazy"
+                                         class="img-fluid product-image" 
+                                         alt="{{ producto.nombre }}"
+                                         onerror="this.src='https://via.placeholder.com/300x200?text=Imagen+No+Disponible'">
+                                </a>
+                            {% else %}
+                                <a href="{{ url_for('product_detail', producto_id=producto.ID_Producto) }}">
+                                    <i class="fas fa-image fa-5x text-muted product-placeholder"></i>
+                                </a>
+                            {% endif %}
+                            
+                            {% if not producto.disponible or producto.stock <= 0 %}
+                                <div class="out-of-stock-overlay">
+                                    <span class="badge bg-danger">AGOTADO</span>
+                                </div>
+                            {% elif producto.stock <= 5 %}
+                                <div class="stock-warning-overlay">
+                                    <span class="badge bg-warning text-dark">ÚLTIMAS UNIDADES</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold product-name">
+                                <a href="{{ url_for('product_detail', producto_id=producto.ID_Producto) }}" 
+                                   class="text-decoration-none text-reset">{{ producto.nombre }}</a>
+                            </h5>
+                            {% if producto.descripcion %}
+                            <div class="product-desc text-muted mb-2" style="display:none;">{{ producto.descripcion }}</div>
+                            {% endif %}
+                            
+                            {% if producto.categoria %}
+                            <p class="mb-2">
+                                <small class="badge bg-primary">
+                                    <i class="{{ producto.categoria.icono }}"></i> {{ producto.categoria.nombre }}
+                                </small>
+                                {% if producto.subcategoria %}
+                                <br>
+                                <small class="badge bg-secondary mt-1">{{ producto.subcategoria.nombre }}</small>
+                                {% endif %}
+                            </p>
+                            {% endif %}
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="fs-4 fw-bold text-primary price">
+                                        ${{ "%.2f"|format(producto.precio) }}
+                                    </span>
+                                    
+                                    {% if producto.disponible and producto.stock > 0 %}
+                                        <span class="badge badge-available">
+                                            <i class="fas fa-check-circle"></i> Disponible
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-unavailable">
+                                            <i class="fas fa-times-circle"></i> Agotado
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if producto.stock > 0 %}
+                                    <p class="text-muted mb-3 stock-info" data-stock-product-id="{{ producto.ID_Producto }}">
+                                        <i class="fas fa-box"></i> 
+                                        {% if producto.stock > 10 %}
+                                            <span class="text-success">Stock: <span class="stock-count">{{ producto.stock }}</span> unidades</span>
+                                        {% elif producto.stock > 5 %}
+                                            <span class="text-warning">Stock: <span class="stock-count">{{ producto.stock }}</span> unidades</span>
+                                        {% else %}
+                                            <span class="text-danger">¡Solo quedan <span class="stock-count">{{ producto.stock }}</span>!</span>
+                                        {% endif %}
+                                    </p>
+                                {% endif %}
+                                
+                                <!-- Botones de acción -->
+                                <div class="d-flex gap-2">
+                                    {% if producto.disponible and producto.stock > 0 %}
+                                                    <a href="{{ url_for('add_to_cart', producto_id=producto.ID_Producto) }}" 
+                                                                    class="btn btn-primary-custom flex-grow-1 add-to-cart-btn"
+                                                                    data-image="{{ producto.imagen|static_or_placeholder(120) }}"
+                                                                    data-product-id="{{ producto.ID_Producto }}"
+                                                                    data-product-name="{{ producto.nombre }}">
+                                            <i class="fas fa-cart-plus"></i> Agregar
+                                        </a>
+                                    {% else %}
+                                        <button class="btn btn-secondary flex-grow-1" disabled>
+                                            <i class="fas fa-ban"></i> No Disponible
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Paginación -->
+            {% if productos.pages > 1 %}
+            <nav class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if productos.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('home', page=productos.prev_num, search=search_query, sort=sort_by, categoria=categoria_actual, subcategoria=subcategoria_actual) }}">
+                            <i class="fas fa-chevron-left"></i> Anterior
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for page_num in productos.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                        {% if page_num %}
+                        <li class="page-item {% if page_num == productos.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('home', page=page_num, search=search_query, sort=sort_by, categoria=categoria_actual, subcategoria=subcategoria_actual) }}">{{ page_num }}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if productos.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('home', page=productos.next_num, search=search_query, sort=sort_by, categoria=categoria_actual, subcategoria=subcategoria_actual) }}">
+                            Siguiente <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-5x text-muted mb-4"></i>
+                <h3 class="text-muted mb-3">
+                    {% if search_query or categoria_actual or subcategoria_actual %}
+                        No se encontraron productos
+                    {% else %}
+                        No hay productos disponibles
+                    {% endif %}
+                </h3>
+                <p class="mb-4">
+                    {% if search_query %}
+                        No hay productos que coincidan con "{{ search_query }}"
+                    {% elif categoria_actual %}
+                        No hay productos en esta categoría
+                    {% else %}
+                        Vuelve pronto para ver nuestras ofertas
+                    {% endif %}
+                </p>
+                <a href="{{ url_for('home') }}" class="btn btn-primary-custom">
+                    <i class="fas fa-arrow-left"></i> Ver Todos los Productos
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

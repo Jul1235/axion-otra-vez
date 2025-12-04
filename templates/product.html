@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+
+{% block title %}{{ producto.nombre }} - Axion Store{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card card-custom">
+        <div class="card-body text-center">
+          {% if producto.imagen %}
+            <div class="product-image-zoom-wrapper" style="display:inline-block;position:relative;">
+              <img id="product-main-image" src="{{ producto.imagen|static_or_placeholder(600) }}" alt="{{ producto.nombre }}" class="img-fluid" style="max-height:420px; object-fit:contain; cursor:zoom-in;" onerror="this.src='https://via.placeholder.com/600x400?text=Imagen+No+Disponible'">
+              <div id="img-magnifier" style="display:none; position:absolute; pointer-events:none; border:1px solid rgba(0,0,0,0.1); box-shadow:0 6px 18px rgba(0,0,0,0.15); border-radius:6px; background-repeat:no-repeat; z-index:1050;"></div>
+            </div>
+          {% else %}
+            <i class="fas fa-image fa-7x text-muted"></i>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h2 class="fw-bold">{{ producto.nombre }}</h2>
+      <p class="text-muted mb-1">
+        {% if categoria %}
+          <small class="badge bg-primary"><i class="{{ categoria.icono }}"></i> {{ categoria.nombre }}</small>
+        {% endif %}
+        {% if subcategoria %}
+          <small class="badge bg-secondary ms-1">{{ subcategoria.nombre }}</small>
+        {% endif %}
+      </p>
+
+      <h3 class="text-primary mt-3">${{ "%.2f"|format(producto.precio) }}</h3>
+
+      {% if producto.disponible and producto.stock > 0 %}
+        <p class="text-success stock-info" data-stock-product-id="{{ producto.ID_Producto }}">Stock: <span class="stock-count">{{ producto.stock }}</span> unidades</p>
+        <div class="d-grid gap-2">
+          <a href="{{ url_for('add_to_cart', producto_id=producto.ID_Producto) }}" class="btn btn-primary-custom btn-lg add-to-cart-btn" data-product-id="{{ producto.ID_Producto }}">
+            <i class="fas fa-cart-plus"></i> Agregar al carrito
+          </a>
+          {% if session.get('user_id') %}
+            {% set in_wl = (producto.ID_Producto in user_wishlist_ids) %}
+            {% if in_wl %}
+              <button type="button" class="btn btn-outline-danger btn-sm btn-wishlist rounded-pill" data-product-id="{{ producto.ID_Producto }}" data-in-wishlist="1" data-product-name="{{ producto.nombre|e }}">
+                <i class="fas fa-heart"></i> Quitar de la wishlist
+              </button>
+            {% else %}
+              <button type="button" class="btn btn-outline-primary btn-sm btn-wishlist rounded-pill" data-product-id="{{ producto.ID_Producto }}" data-in-wishlist="0" data-product-name="{{ producto.nombre|e }}">
+                <i class="far fa-heart"></i> Añadir a la wishlist
+              </button>
+            {% endif %}
+          {% endif %}
+        </div>
+      {% else %}
+        <p class="text-danger">Producto no disponible</p>
+        <button class="btn btn-secondary w-100" disabled><i class="fas fa-ban"></i> No disponible</button>
+      {% endif %}
+
+      <hr>
+      <h5>Descripción</h5>
+      <p class="text-muted">{{ producto.descripcion or 'No hay descripción disponible.' }}</p>
+
+      {% if related_products %}
+      <hr>
+      <h5>Productos relacionados</h5>
+      <div class="related-carousel mt-3">
+        <button class="related-prev btn btn-outline-secondary" aria-label="Anterior">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="related-viewport">
+          <div class="related-track">
+            {% for rp in related_products %}
+            <div class="related-item">
+              {% if session.get('user_id') %}
+                {% set in_wl_rp = (rp.ID_Producto in user_wishlist_ids) %}
+                <a href="#" class="btn-wishlist related-wishlist {% if in_wl_rp %}in-wishlist{% endif %}" data-product-id="{{ rp.ID_Producto }}" data-in-wishlist="{{ '1' if in_wl_rp else '0' }}" data-product-name="{{ rp.nombre|e }}" title="Agregar a favoritos" style="position:absolute; top:6px; right:6px; z-index:5; width:34px; height:34px;">
+                  <i class="{{ 'fas fa-heart' if in_wl_rp else 'far fa-heart' }}"></i>
+                </a>
+              {% endif %}
+              <a href="{{ url_for('product_detail', producto_id=rp.ID_Producto) }}" class="related-link text-decoration-none text-reset d-block text-center">
+                <div class="related-img-wrap">
+                    {% if rp.imagen %}
+                    <img src="{{ rp.imagen|static_or_placeholder(400) }}" loading="lazy" alt="{{ rp.nombre }}">
+                  {% else %}
+                    <div class="related-noimg"><i class="fas fa-image"></i></div>
+                  {% endif %}
+                </div>
+                <div class="related-name small fw-bold mt-2 text-truncate">{{ rp.nombre }}</div>
+                <div class="related-price small text-muted">${{ "%.2f"|format(rp.precio) }}</div>
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <button class="related-next btn btn-outline-secondary" aria-label="Siguiente">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+  {% block extra_js %}
+  <style>
+    /* Estilos del magnificador */
+    #img-magnifier {
+      width: 220px;
+      height: 220px;
+      background-size: 800px 800px; /* se ajustará dinámicamente */
+      transition: opacity 0.12s ease;
+      opacity: 0.98;
+    }
+
+    /* Modal image container tweaks */
+    .zoom-modal-img {
+      cursor: grab;
+      touch-action: none;
+      max-width: 100%;
+      max-height: 80vh;
+      transform-origin: 0 0;
+    }
+  </style>
+
+  <!-- Modal para vista ampliada con pan/zoom -->
+  <div class="modal fade" id="zoomModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ producto.nombre }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <img id="zoom-modal-image" src="{{ producto.imagen|static_or_placeholder(1200) }}" alt="{{ producto.nombre }}" class="zoom-modal-img" />
+        </div>
+        <div class="modal-footer">
+          <small class="text-muted me-auto">Usa la rueda del ratón para acercar/alejar. Arrastra para desplazar.</small>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const img = document.getElementById('product-main-image');
+    const magnifier = document.getElementById('img-magnifier');
+    const wrapper = document.querySelector('.product-image-zoom-wrapper');
+
+    if (img && magnifier && wrapper) {
+      let zoom = 2.2; // factor de zoom del lente
+      let imgNaturalW = 0, imgNaturalH = 0;
+
+      // Cuando la imagen cargue, establecemos background-size
+      function refreshNatural() {
+        imgNaturalW = img.naturalWidth || img.width;
+        imgNaturalH = img.naturalHeight || img.height;
+        magnifier.style.backgroundImage = `url(${img.src})`;
+        magnifier.style.backgroundSize = `${imgNaturalW * zoom}px ${imgNaturalH * zoom}px`;
+      }
+
+      if (img.complete) refreshNatural();
+      img.addEventListener('load', refreshNatural);
+
+      // Movimientos del ratón para actualizar pos del lente
+      function onMove(e) {
+        const rect = img.getBoundingClientRect();
+        const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+        const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+        if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+          magnifier.style.display = 'none';
+          return;
+        }
+        magnifier.style.display = '';
+        const magW = magnifier.offsetWidth;
+        const magH = magnifier.offsetHeight;
+        const percentX = x / rect.width;
+        const percentY = y / rect.height;
+
+        // posicion del magnifier dentro del wrapper (mantener centrado en cursor)
+        const left = Math.max(0, Math.min(rect.width - magW, x - magW / 2));
+        const top = Math.max(0, Math.min(rect.height - magH, y - magH / 2));
+        magnifier.style.left = left + 'px';
+        magnifier.style.top = top + 'px';
+
+        // background-position calculado sobre la imagen natural y el factor zoom
+        const bgX = Math.round((imgNaturalW * percentX * zoom) - magW / 2);
+        const bgY = Math.round((imgNaturalH * percentY * zoom) - magH / 2);
+        magnifier.style.backgroundPosition = `-${bgX}px -${bgY}px`;
+      }
+
+      // Mostrar lente al mover y ocultar cuando sale
+      wrapper.addEventListener('mouseenter', function(e) {
+        magnifier.style.display = '';
+      });
+      wrapper.addEventListener('mousemove', onMove);
+      wrapper.addEventListener('touchmove', onMove, { passive: true });
+      wrapper.addEventListener('mouseleave', function() { magnifier.style.display = 'none'; });
+
+      // Clic abre modal con zoom y drag
+      wrapper.addEventListener('click', function() {
+        const modalEl = document.getElementById('zoomModal');
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+      });
+
+      // Modal: manejo zoom con rueda y arrastre
+      (function setupModalZoom() {
+        const modalImg = document.getElementById('zoom-modal-image');
+        let scale = 1;
+        let originX = 0, originY = 0;
+        let isPanning = false;
+        let startX = 0, startY = 0;
+        let translateX = 0, translateY = 0;
+
+        function applyTransform() {
+          modalImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        }
+
+        modalImg.addEventListener('wheel', function(e) {
+          e.preventDefault();
+          const delta = -e.deltaY;
+          const factor = delta > 0 ? 1.08 : 0.92;
+          const prevScale = scale;
+          scale = Math.min(6, Math.max(1, scale * factor));
+
+          // ajustar translate para zoom relativo al cursor
+          const rect = modalImg.getBoundingClientRect();
+          const cx = e.clientX - rect.left;
+          const cy = e.clientY - rect.top;
+          // calcular cambio en escala y ajustar translate
+          translateX -= (cx - translateX) * (scale / prevScale - 1);
+          translateY -= (cy - translateY) * (scale / prevScale - 1);
+          applyTransform();
+        }, { passive: false });
+
+        modalImg.addEventListener('pointerdown', function(e) {
+          if (scale <= 1) return;
+          isPanning = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          modalImg.style.cursor = 'grabbing';
+          modalImg.setPointerCapture(e.pointerId);
+        });
+
+        modalImg.addEventListener('pointermove', function(e) {
+          if (!isPanning) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          startX = e.clientX; startY = e.clientY;
+          translateX += dx;
+          translateY += dy;
+          applyTransform();
+        });
+
+        modalImg.addEventListener('pointerup', function(e) {
+          isPanning = false;
+          modalImg.style.cursor = 'grab';
+          try { modalImg.releasePointerCapture(e.pointerId); } catch (err) {}
+        });
+
+        // Reset transform when modal hides
+        const modalEl = document.getElementById('zoomModal');
+        modalEl.addEventListener('hidden.bs.modal', function() {
+          scale = 1; translateX = 0; translateY = 0; applyTransform();
+        });
+      })();
+    }
+  });
+  </script>
+  <script>
+  // Related products simple carousel
+  document.addEventListener('DOMContentLoaded', function() {
+    const carousel = document.querySelector('.related-carousel');
+    if (!carousel) return;
+    const viewport = carousel.querySelector('.related-viewport');
+    const track = carousel.querySelector('.related-track');
+    const items = Array.from(track.children);
+    const prevBtn = carousel.querySelector('.related-prev');
+    const nextBtn = carousel.querySelector('.related-next');
+
+    let index = 0;
+
+    function refresh() {
+      if (!items.length) return;
+      // compute item width including gap (approx)
+      const itemRect = items[0].getBoundingClientRect();
+      const viewportRect = viewport.getBoundingClientRect();
+      const gap = parseFloat(getComputedStyle(track).gap) || 12;
+      const itemW = itemRect.width + gap;
+      const visibleCount = Math.max(1, Math.floor(viewportRect.width / itemW));
+      const maxIndex = Math.max(0, items.length - visibleCount);
+      if (index > maxIndex) index = maxIndex;
+
+      const translateX = -index * itemW;
+      track.style.transform = `translateX(${translateX}px)`;
+
+      // toggle buttons
+      if (index <= 0) prevBtn.setAttribute('disabled',''); else prevBtn.removeAttribute('disabled');
+      if (index >= maxIndex) nextBtn.setAttribute('disabled',''); else nextBtn.removeAttribute('disabled');
+    }
+
+    prevBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      // move by visible count
+      const viewportRect = viewport.getBoundingClientRect();
+      const itemRect = items[0].getBoundingClientRect();
+      const gap = parseFloat(getComputedStyle(track).gap) || 12;
+      const itemW = itemRect.width + gap;
+      const visibleCount = Math.max(1, Math.floor(viewportRect.width / itemW));
+      index = Math.max(0, index - visibleCount);
+      refresh();
+    });
+    nextBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const viewportRect = viewport.getBoundingClientRect();
+      const itemRect = items[0].getBoundingClientRect();
+      const gap = parseFloat(getComputedStyle(track).gap) || 12;
+      const itemW = itemRect.width + gap;
+      const visibleCount = Math.max(1, Math.floor(viewportRect.width / itemW));
+      const maxIndex = Math.max(0, items.length - visibleCount);
+      index = Math.min(maxIndex, index + visibleCount);
+      refresh();
+    });
+
+    // Touch / swipe support
+    let startX = 0; let isDragging = false;
+    viewport.addEventListener('pointerdown', function(e) { startX = e.clientX; isDragging = true; });
+    viewport.addEventListener('pointermove', function(e) {
+      if (!isDragging) return; const dx = e.clientX - startX; if (Math.abs(dx) > 40) {
+        if (dx < 0) nextBtn.click(); else prevBtn.click(); isDragging = false;
+      }
+    });
+    viewport.addEventListener('pointerup', function() { isDragging = false; });
+    viewport.addEventListener('pointercancel', function() { isDragging = false; });
+
+    window.addEventListener('resize', function() { setTimeout(refresh, 120); });
+    // initial
+    setTimeout(refresh, 60);
+  });
+  </script>
+  {% endblock %}

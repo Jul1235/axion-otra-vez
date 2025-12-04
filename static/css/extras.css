@@ -1,0 +1,23 @@
+/* Extras: skeletons, inline confirmations, accessibility and touch targets */
+
+/* Skeleton loaders */
+.skeleton-wrapper{position:relative;overflow:hidden}
+.skeleton-card{position:absolute;inset:0;background:linear-gradient(90deg,#f0f0f0 0%,#e9e9e9 50%,#f0f0f0 100%);background-size:200% 100%;animation:shimmer 1.2s linear infinite}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.skeleton-card[style*="display: none"]{display:none}
+
+/* Inline confirmations */
+#inline-confirmations .card{border-radius:8px}
+
+/* Contrast and touch targets */
+.btn, .btn-primary-custom{min-height:44px;padding:10px 14px;font-size:1rem}
+
+/* High contrast for important badges */
+.badge-available{background:#28a745!important;color:#fff}
+.badge-unavailable{background:#dc3545!important;color:#fff}
+
+/* Accessibility: focus outline for keyboard users */
+a:focus, button:focus, input:focus{outline:3px solid rgba(88,106,138,0.25);outline-offset:2px}
+
+/* Inline related product tweaks */
+.card-custom .img-fluid{max-height:140px;object-fit:contain}

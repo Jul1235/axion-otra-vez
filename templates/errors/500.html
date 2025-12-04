@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Error 500 - Error interno{% endblock %}
+
+{% block content %}
+<div class="container text-center my-5">
+	<h1 class="display-4">500 — Error interno del servidor</h1>
+	<p class="lead">Lo sentimos, algo salió mal en el servidor.</p>
+	<p>Estamos trabajando para resolverlo. Por favor intenta más tarde.</p>
+
+	<a href="{{ url_for('home') }}" class="btn btn-primary mt-3"><i class="fas fa-home"></i> Ir al inicio</a>
+	<a href="javascript:location.reload()" class="btn btn-outline-secondary mt-3 ms-2">Reintentar</a>
+
+	<hr class="my-4">
+	<p class="text-muted">Si este error persiste, envía los detalles al equipo técnico: <a href="mailto:support@axionstore.com">support@axionstore.com</a></p>
+</div>
+{% endblock %}
+

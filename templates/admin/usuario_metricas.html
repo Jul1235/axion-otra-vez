@@ -1,0 +1,522 @@
+{% extends "base.html" %}
+
+{% block title %}Axion Store - Métricas de {{ usuario.nombre }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .metric-box {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .metric-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+
+    .metric-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    .timeline-item {
+        border-left: 3px solid #667eea;
+        padding-left: 20px;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -8px;
+        top: 0;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background: #667eea;
+        border: 3px solid white;
+    }
+
+    .badge-accion {
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+    }
+
+    .badge-agregar { background: #10b981; color: white; }
+    .badge-quitar { background: #f59e0b; color: white; }
+    .badge-comprar { background: #3b82f6; color: white; }
+    .badge-abandonar { background: #ef4444; color: white; }
+
+    .stat-card-small {
+        padding: 15px;
+        border-radius: 8px;
+        background: #f8f9fa;
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-6 fw-bold">
+                <i class="fas fa-user-chart"></i> Métricas Detalladas
+            </h1>
+            <p class="text-muted mb-0">
+                Usuario: <strong>{{ usuario.nombre }}</strong> ({{ usuario.email }})
+            </p>
+        </div>
+        <div>
+            <a href="{{ url_for('admin_usuarios') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver a Usuarios
+            </a>
+        </div>
+    </div>
+
+    <!-- Resumen del Usuario -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="metric-box">
+                <div class="metric-value">{{ usuario.total_compras }}</div>
+                <div class="metric-label">Total Compras</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-box" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="metric-value">${{ "%.2f"|format(usuario.total_gastado) }}</div>
+                <div class="metric-label">Total Gastado</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-box" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="metric-value">{{ usuario.total_recargas }}</div>
+                <div class="metric-label">Total Recargas</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-box" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <div class="metric-value">{{ "%.1f"|format(usuario.tasa_conversion) }}%</div>
+                <div class="metric-label">Tasa de Conversión</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información General -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-custom">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle"></i> Información General
+                    </h5>
+                    <table class="table table-sm">
+                        <tr>
+                            <td><strong>ID Usuario:</strong></td>
+                            <td>{{ usuario.ID_Users }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fecha Registro:</strong></td>
+                            <td>{{ usuario.fecha_registro.strftime('%d/%m/%Y %H:%M') }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Segmento:</strong></td>
+                            <td>
+                                <span class="badge
+                                    {% if usuario.segmento_cliente == 'vip' %}bg-warning text-dark
+                                    {% elif usuario.segmento_cliente == 'activo' %}bg-success
+                                    {% elif usuario.segmento_cliente == 'inactivo' %}bg-secondary
+                                    {% else %}bg-primary{% endif %}">
+                                    {{ usuario.segmento_cliente|capitalize }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Última Actividad:</strong></td>
+                            <td>{{ usuario.ultima_actividad.strftime('%d/%m/%Y %H:%M') if usuario.ultima_actividad else 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ticket Promedio:</strong></td>
+                            <td class="fw-bold text-success">${{ "%.2f"|format(usuario.ticket_promedio) }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recarga Promedio:</strong></td>
+                            <td class="fw-bold text-primary">${{ "%.2f"|format(usuario.recarga_promedio) }}</td>
+                        </tr>
+                        {% if promedio_dias_entre_compras > 0 %}
+                        <tr>
+                            <td><strong>Días entre Compras:</strong></td>
+                            <td>{{ "%.0f"|format(promedio_dias_entre_compras) }} días</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-custom">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-shopping-cart"></i> Estado del Carrito
+                    </h5>
+                    <div class="stat-card-small">
+                        <div class="d-flex justify-content-between">
+                            <span>Productos en Carrito Actual:</span>
+                            <strong>{{ usuario.productos_carrito_actual }}</strong>
+                        </div>
+                    </div>
+                    <div class="stat-card-small">
+                        <div class="d-flex justify-content-between">
+                            <span>Valor del Carrito:</span>
+                            <strong class="text-success">${{ "%.2f"|format(usuario.valor_carrito_actual) }}</strong>
+                        </div>
+                    </div>
+                    <div class="stat-card-small">
+                        <div class="d-flex justify-content-between">
+                            <span>Total Productos Agregados:</span>
+                            <strong>{{ usuario.productos_agregados_carrito_total }}</strong>
+                        </div>
+                    </div>
+                    <div class="stat-card-small">
+                        <div class="d-flex justify-content-between">
+                            <span>Carritos Abandonados:</span>
+                            <strong class="text-danger">{{ usuario.carritos_abandonados }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Productos Favoritos -->
+    {% if productos_favoritos %}
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card card-custom">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-heart"></i> Top 10 Productos Más Comprados
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Producto</th>
+                                    <th>Unidades Compradas</th>
+                                    <th>Gasto Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for producto in productos_favoritos %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>
+                                        {% if producto.imagen %}
+                                        <img src="{{ url_for('static', filename=producto.imagen) }}"
+                                             style="width:40px;height:40px;object-fit:cover;border-radius:5px;"
+                                             class="me-2"
+                                             onerror="this.style.display='none'">
+                                        {% endif %}
+                                        {{ producto.nombre }}
+                                    </td>
+                                    <td><span class="badge bg-primary">{{ producto.total_comprado }}</span></td>
+                                    <td class="fw-bold text-success">${{ "%.2f"|format(producto.gasto_total) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Productos No Comprados (Abandonados) -->
+    {% if productos_no_comprados %}
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card card-custom border-warning">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">
+                        <i class="fas fa-exclamation-circle"></i> Productos Agregados pero No Comprados
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Producto</th>
+                                    <th>Precio</th>
+                                    <th>Veces Agregado</th>
+                                    <th>Valor Perdido</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for producto in productos_no_comprados %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ producto.nombre }}</td>
+                                    <td>${{ "%.2f"|format(producto.precio) }}</td>
+                                    <td><span class="badge bg-warning text-dark">{{ producto.veces_agregado }}</span></td>
+                                    <td class="fw-bold text-danger">${{ "%.2f"|format(producto.valor_total) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Historial de Transacciones Wallet -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card card-custom">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-wallet"></i> Historial de Transacciones Wallet
+                        <span class="badge bg-info ms-2">{{ transacciones|length }} transacciones</span>
+                    </h5>
+
+                    <!-- Tabs -->
+                    <ul class="nav nav-tabs mt-3" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#todas">
+                                Todas ({{ transacciones|length }})
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#recargas">
+                                Recargas ({{ recargas|length }})
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#compras">
+                                Compras ({{ compras|length }})
+                            </a>
+                        </li>
+                        {% if admin_recargas %}
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#admin">
+                                Admin ({{ admin_recargas|length }})
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content mt-3">
+                        <!-- Todas -->
+                        <div id="todas" class="tab-pane fade show active">
+                            {% if transacciones %}
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Tipo</th>
+                                            <th>Monto</th>
+                                            <th>Saldo Anterior</th>
+                                            <th>Saldo Nuevo</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for transaccion in transacciones %}
+                                        <tr>
+                                            <td>{{ transaccion.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+                                            <td>
+                                                <span class="badge
+                                                    {% if transaccion.tipo == 'recarga' %}bg-success
+                                                    {% elif transaccion.tipo == 'compra' %}bg-primary
+                                                    {% else %}bg-warning text-dark{% endif %}">
+                                                    {{ transaccion.tipo|capitalize }}
+                                                </span>
+                                            </td>
+                                            <td class="fw-bold {% if transaccion.monto > 0 %}text-success{% else %}text-danger{% endif %}">
+                                                {{ "+" if transaccion.monto > 0 else "" }}${{ "%.2f"|format(transaccion.monto) }}
+                                            </td>
+                                            <td>${{ "%.2f"|format(transaccion.saldo_anterior) }}</td>
+                                            <td class="fw-bold">${{ "%.2f"|format(transaccion.saldo_nuevo) }}</td>
+                                            <td><small>{{ transaccion.descripcion }}</small></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-muted text-center">No hay transacciones</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Recargas -->
+                        <div id="recargas" class="tab-pane fade">
+                            {% if recargas %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Monto</th>
+                                            <th>Saldo Nuevo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for transaccion in recargas %}
+                                        <tr>
+                                            <td>{{ transaccion.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+                                            <td class="fw-bold text-success">+${{ "%.2f"|format(transaccion.monto) }}</td>
+                                            <td>${{ "%.2f"|format(transaccion.saldo_nuevo) }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-muted text-center">No hay recargas</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Compras -->
+                        <div id="compras" class="tab-pane fade">
+                            {% if compras %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Pedido</th>
+                                            <th>Monto</th>
+                                            <th>Saldo Nuevo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for transaccion in compras %}
+                                        <tr>
+                                            <td>{{ transaccion.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+                                            <td>#{{ transaccion.ID_Pedido }}</td>
+                                            <td class="fw-bold text-danger">${{ "%.2f"|format(transaccion.monto) }}</td>
+                                            <td>${{ "%.2f"|format(transaccion.saldo_nuevo) }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-muted text-center">No hay compras</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Admin -->
+                        {% if admin_recargas %}
+                        <div id="admin" class="tab-pane fade">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Monto</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for transaccion in admin_recargas %}
+                                        <tr>
+                                            <td>{{ transaccion.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+                                            <td class="fw-bold text-warning">+${{ "%.2f"|format(transaccion.monto) }}</td>
+                                            <td>{{ transaccion.descripcion }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historial de Carrito -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card card-custom">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-history"></i> Historial de Actividad en Carrito
+                        <span class="badge bg-secondary ms-2">Últimas 100 acciones</span>
+                    </h5>
+
+                    <!-- Resumen de acciones -->
+                    <div class="row text-center mt-3 mb-3">
+                        <div class="col-md-3">
+                            <div class="stat-card-small">
+                                <span class="badge-accion badge-agregar">Agregados</span>
+                                <div class="fw-bold mt-2">{{ agregados|length }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card-small">
+                                <span class="badge-accion badge-comprar">Comprados</span>
+                                <div class="fw-bold mt-2">{{ comprados|length }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card-small">
+                                <span class="badge-accion badge-quitar">Quitados</span>
+                                <div class="fw-bold mt-2">{{ quitados|length }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card-small">
+                                <span class="badge-accion badge-abandonar">Abandonados</span>
+                                <div class="fw-bold mt-2">{{ abandonados|length }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline de acciones -->
+                    {% if historial_carrito %}
+                    <div style="max-height: 500px; overflow-y: auto;">
+                        {% for item, nombre_producto in historial_carrito[:50] %}
+                        <div class="timeline-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="badge-accion badge-{{ item.accion }}">
+                                        {{ item.accion|capitalize }}
+                                    </span>
+                                    <strong class="ms-2">{{ nombre_producto }}</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        {{ item.cantidad }} unidad(es) × ${{ "%.2f"|format(item.precio_momento) }}
+                                        = ${{ "%.2f"|format(item.valor_total) }}
+                                    </small>
+                                </div>
+                                <small class="text-muted">
+                                    {{ item.fecha.strftime('%d/%m/%Y %H:%M') }}
+                                </small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center">No hay historial de carrito</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

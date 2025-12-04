@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Axion Store - Gestión de Usuarios{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-4 fw-bold">
+            <i class="fas fa-users"></i> Gestión de Usuarios
+        </h1>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Volver al Panel
+        </a>
+    </div>
+
+    <div class="card card-custom border-0">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Fecha Registro</th>
+                            <th>Rol</th>
+                            <th>Saldo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario in usuarios %}
+                        <tr>
+                            <td>{{ usuario.ID_Users }}</td>
+                            <td>{{ usuario.nombre }}</td>
+                            <td>{{ usuario.email }}</td>
+                            <td>{{ usuario.fecha_registro.strftime('%d/%m/%Y') if usuario.fecha_registro else 'N/A' }}</td>
+                            <td>
+                                {% if usuario.es_admin %}
+                                    <span class="badge bg-danger">Admin</span>
+                                {% else %}
+                                    <span class="badge bg-primary">Usuario</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if usuario.wallet %}
+                                    <strong class="text-success">${{ "%.2f"|format(usuario.wallet.saldo) }}</strong>
+                                {% else %}
+                                    <span class="text-muted">Sin wallet</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{{ url_for('admin_usuario_metricas', usuario_id=usuario.ID_Users) }}"
+                                       class="btn btn-sm btn-outline-info" title="Ver métricas detalladas">
+                                        <i class="fas fa-chart-bar"></i> Métricas
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                            data-bs-toggle="modal" data-bs-target="#modalRecarga{{ usuario.ID_Users }}">
+                                        <i class="fas fa-coins"></i> Recargar
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modales de recarga (fuera de la tabla) -->
+{% for usuario in usuarios %}
+<div class="modal fade" id="modalRecarga{{ usuario.ID_Users }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Recargar Saldo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin_agregar_saldo', usuario_id=usuario.ID_Users) }}">
+                <div class="modal-body">
+                    <p>Usuario: <strong>{{ usuario.nombre }}</strong></p>
+                    <p>Saldo actual: <strong>${{ "%.2f"|format(usuario.wallet.saldo) if usuario.wallet else 0 }}</strong></p>
+                    
+                    <div class="mb-3">
+                        <label for="monto{{ usuario.ID_Users }}" class="form-label">Monto a recargar:</label>
+                        <input type="number" class="form-control" id="monto{{ usuario.ID_Users }}" 
+                               name="monto" min="1" max="10000" step="0.01" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary-custom">Recargar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

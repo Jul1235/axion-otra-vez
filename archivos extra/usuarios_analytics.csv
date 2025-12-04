@@ -1,0 +1,102 @@
+ID_Usuario,Nombre,Email,Fecha_Registro,Segmento,Total_Compras,Total_Gastado,Ticket_Promedio,Total_Recargas,Dinero_Recargado,Recarga_Promedio,Productos_Carrito_Actual,Valor_Carrito_Actual,Total_Productos_Agregados,Carritos_Abandonados,Tasa_Conversion,Dias_Desde_Ultima_Compra,Saldo_Actual
+1,Gerónimo Julia Cavazos Peres,xbustamante@yahoo.com,2024-06-16,inactivo,0,0.00,0.00,0,0.00,0.00,0,0.00,11,2,0.00,,50.00
+2,Vicente Santiago,acedogracia@yahoo.com,2024-06-29,activo,5,2284.89,456.98,2,2895.18,1447.59,0,0.00,12,1,91.67,310,660.29
+3,Arcelia Gaytán Quiñones,rpatino@hotmail.com,2025-02-08,nuevo,2,589.96,294.98,1,1281.83,1281.83,0,0.00,9,1,44.44,253,741.87
+4,Guiomar Valenciano-Bárcena,gabrielorozco@yahoo.com,2025-09-14,nuevo,1,499.97,499.97,1,1058.51,1058.51,0,0.00,3,0,100.00,9,608.54
+5,Cristina Teruel Lladó,dbotello@hotmail.com,2024-06-02,vip,10,8294.75,829.47,4,8449.32,2112.33,0,0.00,25,0,100.00,20,204.57
+6,Silvia Ángela Zaragoza,zacarias98@hotmail.com,2025-08-07,activo,6,2634.87,439.14,4,4320.80,1080.20,0,0.00,28,3,46.43,17,1735.93
+7,Marisol de Anda,esther06@hotmail.com,2024-07-09,activo,4,2919.85,729.96,2,2987.78,1493.89,0,0.00,25,3,60.00,35,117.93
+8,Hernán Rosario,gaitanraquel@hotmail.com,2024-03-07,activo,5,4127.87,825.57,2,5633.73,2816.86,0,0.00,13,0,100.00,153,1555.86
+9,Diego Cerdán Carrillo,rnogues@yahoo.com,2025-06-12,inactivo,1,279.98,279.98,1,813.63,813.63,0,0.00,2,0,100.00,157,583.65
+10,Karina Martha Urías,jmeraz@yahoo.com,2025-07-05,nuevo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,50.00
+11,Celia Antúnez Mur,maxi32@yahoo.com,2024-06-30,nuevo,2,2159.92,1079.96,1,2567.40,2567.40,0,0.00,8,0,100.00,31,457.48
+12,Jacinto Blanch Cabanillas,cortesnatalia@hotmail.com,2024-05-01,activo,8,3614.86,451.86,4,4595.84,1148.96,0,0.00,14,0,100.00,52,1030.98
+13,Emiliana de Alemany,olmedoreyes@gmail.com,2025-01-14,nuevo,2,239.97,119.98,1,297.37,297.37,0,0.00,3,0,100.00,22,107.40
+14,Víctor Juan Naranjo Sevilla,zeferinogallardo@gmail.com,2025-03-28,activo,6,2529.85,421.64,1,3107.84,3107.84,0,0.00,28,3,53.57,47,627.99
+15,María Pilar del Gámez,catalina03@yahoo.com,2024-05-14,nuevo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,50.00
+16,Fernanda Bernat Aguirre,bsamaniego@gmail.com,2024-04-23,nuevo,1,694.95,694.95,1,1252.47,1252.47,0,0.00,5,0,100.00,219,607.52
+17,Manuelita Puig,jsalmeron@hotmail.com,2025-08-24,activo,3,2829.88,943.29,2,5822.80,2911.40,0,0.00,12,0,100.00,37,3042.92
+18,Jennifer Ángel Benavente,pascualalberola@gmail.com,2024-06-16,nuevo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,50.00
+19,Gilberto Sofía Grijalva,mgaliano@hotmail.com,2024-01-04,nuevo,2,1239.93,619.96,1,1851.92,1851.92,0,0.00,10,2,70.00,130,661.99
+20,Jordán Casas Esteban,hermelinda00@yahoo.com,2024-10-01,nuevo,1,679.98,679.98,1,1437.49,1437.49,0,0.00,2,0,100.00,345,807.51
+21,Sonia Ojeda,wacuna@gmail.com,2024-05-22,nuevo,2,2349.97,1174.98,2,4448.64,2224.32,0,0.00,3,0,100.00,322,2148.67
+22,Visitación Orozco Ribas,rinconxavier@yahoo.com,2024-06-29,vip,13,16254.60,1250.35,6,17160.00,2860.00,0,0.00,43,0,100.00,3,955.44
+23,Ángeles Cuéllar,dalia73@gmail.com,2024-09-26,nuevo,0,0.00,0.00,0,0.00,0.00,0,0.00,8,3,0.00,,50.00
+24,Sonia Rivero Perales,santiago20@hotmail.com,2025-09-01,nuevo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,50.00
+25,Rodrigo Clara Ayala Reynoso,catalina35@yahoo.com,2025-09-29,nuevo,2,644.96,322.48,1,972.58,972.58,0,0.00,4,0,100.00,,377.62
+26,María Ángeles del Arnau,abelardoberrios@yahoo.com,2024-02-13,activo,4,4844.93,1211.23,3,7807.43,2602.48,0,0.00,7,0,100.00,,3012.50
+27,Andrea Carbó Portero,rbauza@yahoo.com,2025-03-09,nuevo,2,1789.95,894.97,1,2066.31,2066.31,0,0.00,20,3,25.00,107,326.36
+28,Flavio Jonás Palomo,aurena@yahoo.com,2025-01-17,nuevo,1,934.98,934.98,1,2483.68,2483.68,0,0.00,11,2,18.18,168,1598.70
+29,Claudia Cristobal Gil Briseño,martha35@yahoo.com,2024-01-24,activo,8,3930.76,491.34,3,5382.67,1794.22,0,0.00,24,0,100.00,22,1501.91
+30,Cristian Criado Paniagua,marcos40@yahoo.com,2025-10-06,activo,6,3459.85,576.64,2,4559.24,2279.62,0,0.00,15,0,100.00,9,1149.39
+31,Chelo Alfaro Perales,maria-cristina54@yahoo.com,2025-03-07,nuevo,2,1389.95,694.97,2,3523.56,1761.78,0,0.00,9,1,55.56,161,2183.61
+32,Renato Espino Yáñez,maria90@yahoo.com,2025-05-11,nuevo,1,309.98,309.98,1,879.00,879.00,0,0.00,7,1,28.57,28,619.02
+33,Juliana Rivero Rosa,benavideszoe@yahoo.com,2024-08-15,activo,8,4739.80,592.47,3,5297.46,1765.82,0,0.00,23,1,86.96,49,607.66
+34,Morena Montaña Galindo,angelitamontana@gmail.com,2024-10-28,nuevo,2,1049.96,524.98,1,1429.79,1429.79,0,0.00,4,0,100.00,333,429.83
+35,Ofelia Pineda Corrales,felix57@yahoo.com,2025-06-27,nuevo,1,2819.92,2819.92,1,4851.65,4851.65,0,0.00,8,0,100.00,51,2081.73
+36,Juan Pablo Duarte Oliva,lledorico@yahoo.com,2024-06-25,inactivo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,50.00
+37,María Pilar Gámez Vila,aureaminguez@gmail.com,2024-01-09,vip,7,6419.74,917.11,4,11633.30,2908.33,0,0.00,26,0,100.00,88,5263.60
+38,Dr. Alta  Gracia Magaña,vazquezpaola@gmail.com,2024-04-03,inactivo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,50.00
+39,Rodrigo Sotelo,jsoriano@hotmail.com,2024-06-18,inactivo,1,1605.93,1605.93,1,3917.09,3917.09,0,0.00,7,0,100.00,408,2361.16
+40,Ángel Salgado Villalonga,martinmora@gmail.com,2025-05-16,inactivo,0,0.00,0.00,0,0.00,0.00,0,0.00,14,3,0.00,,50.00
+41,Jenny Sebastián Crespo,ana-mariavega@hotmail.com,2025-03-09,nuevo,1,789.96,789.96,1,1466.83,1466.83,0,0.00,12,2,33.33,195,726.87
+42,Ignacio Duarte,tvalenzuela@hotmail.com,2025-04-08,nuevo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,50.00
+43,Julia Herrero Alsina,zvalentin@yahoo.com,2025-03-12,inactivo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,50.00
+44,Celso Patiño Ayala,pruelas@gmail.com,2025-05-14,nuevo,2,379.98,189.99,1,547.93,547.93,0,0.00,13,2,15.38,76,217.95
+45,María Cristina Aguirre-Barriga,carrionyolanda@yahoo.com,2024-11-09,activo,3,1329.94,443.31,1,2495.85,2495.85,0,0.00,6,0,100.00,95,1215.91
+46,Ing. José Emilio González,octavio02@gmail.com,2024-11-18,nuevo,2,2159.91,1079.95,2,4801.67,2400.83,0,0.00,9,0,100.00,316,2691.76
+47,Luz Heredia,danielhernandez@yahoo.com,2025-09-04,inactivo,1,409.97,409.97,1,1077.66,1077.66,0,0.00,14,3,21.43,72,717.69
+48,Silvestre Morata Vallejo,jafetmonreal@hotmail.com,2024-12-27,vip,5,3697.86,739.57,2,7053.13,3526.57,0,0.00,14,0,100.00,86,3405.27
+49,María Del Carmen Rivera Goñi,ybayon@hotmail.com,2025-09-07,nuevo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,50.00
+50,Viviana Lobato Borrell,emiliomarquez@gmail.com,2024-08-19,nuevo,1,559.97,559.97,1,1274.76,1274.76,0,0.00,3,0,100.00,350,764.79
+51,Eladio de Cuevas,moisesiborra@yahoo.com,2025-08-02,activo,8,6877.75,859.72,2,11529.20,5764.62,0,0.00,41,3,60.98,19,4701.49
+52,Belén Almagro Burgos,xde-leon@hotmail.com,2025-04-05,vip,19,16265.40,856.08,4,16426.70,4106.68,0,0.00,69,3,81.16,3,211.27
+53,Eugenio Villarreal Zepeda,herminio33@gmail.com,2024-06-09,nuevo,1,399.99,399.99,1,664.35,664.35,0,0.00,1,0,100.00,466,314.36
+54,Nadia Anaya Ureña,esteban09@yahoo.com,2025-08-28,vip,20,8206.56,410.33,6,8345.11,1390.85,0,0.00,45,1,97.78,2,188.55
+55,Adela Vela,fmontes@yahoo.com,2024-07-02,vip,12,11282.70,940.22,3,12218.00,4072.67,0,0.00,33,0,100.00,71,985.34
+56,Minerva Patiño,xcamarillo@yahoo.com,2025-08-24,activo,5,5569.83,1113.97,2,6377.01,3188.51,0,0.00,17,0,100.00,34,857.18
+57,Ana Belén Mónica Tamayo Ferrero,smarti@hotmail.com,2024-01-14,nuevo,1,99.98,99.98,1,191.94,191.94,0,0.00,2,0,100.00,374,141.96
+58,Carolina Carranza Cruz,anabel54@hotmail.com,2025-10-10,vip,11,4502.75,409.34,4,6195.57,1548.89,0,0.00,25,0,100.00,7,1742.82
+59,Natividad Candelaria,esalcedo@gmail.com,2024-02-19,activo,4,494.96,123.74,2,670.14,335.07,0,0.00,4,0,100.00,172,225.18
+60,Julio Peral Blasco,torrezruben@yahoo.com,2024-04-28,activo,3,1177.94,392.65,2,1918.39,959.19,0,0.00,6,0,100.00,30,790.45
+61,Ing. Dalia Huerta,florencia17@gmail.com,2024-05-29,vip,12,6639.65,553.30,5,6945.65,1389.13,0,0.00,35,0,100.00,78,356.00
+62,César Jaime,esperanzaregalado@gmail.com,2025-09-13,inactivo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,50.00
+63,Severiano Narváez-Sebastián,clara34@hotmail.com,2024-03-23,nuevo,1,79.99,79.99,1,211.17,211.17,0,0.00,5,1,20.00,197,181.18
+64,Amanda Esquivel Guevara,cristobal66@yahoo.com,2024-03-10,activo,2,754.97,377.48,2,2101.74,1050.87,0,0.00,3,0,100.00,50,1396.77
+65,José Emilio Eduardo Tejada,segoviapedro@yahoo.com,2025-05-25,activo,8,4849.75,606.22,3,7130.83,2376.94,0,0.00,25,0,100.00,12,2331.08
+66,Citlali Ozuna,silvano66@yahoo.com,2025-10-06,activo,4,1934.93,483.73,2,4175.20,2087.60,0,0.00,7,0,100.00,3,2290.27
+67,Hernando Alvarez,rioslorena@hotmail.com,2025-04-10,activo,2,1879.91,939.95,1,2448.46,2448.46,0,0.00,9,0,100.00,46,618.55
+68,Mtro. Mariana Verduzco,fpinol@hotmail.com,2024-04-02,nuevo,1,89.99,89.99,1,242.19,242.19,0,0.00,1,0,100.00,189,202.20
+69,Homero Agustín Cabán Toledo,clarabriones@gmail.com,2024-09-06,activo,8,7138.72,892.34,4,7544.13,1886.03,0,0.00,28,0,100.00,27,455.41
+70,Jose Tejada Escribano,hinojosanoelia@yahoo.com,2024-09-15,activo,3,1069.92,356.64,2,1372.76,686.38,0,0.00,18,3,44.44,239,352.84
+71,Helena Pedroza,ferranfeliciano@hotmail.com,2024-09-10,activo,8,6379.71,797.46,3,6652.26,2217.42,0,0.00,29,0,100.00,10,322.55
+72,Leonor Agustín Cabrera,candelariabaro@gmail.com,2024-07-12,vip,8,4299.75,537.47,2,5626.53,2813.26,0,0.00,25,0,100.00,39,1376.78
+73,Conchita Maya,ani32@yahoo.com,2024-11-02,nuevo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,50.00
+74,Ramiro Mayte Vega,usoria@gmail.com,2024-06-24,vip,17,12165.50,715.62,8,14082.80,1760.35,0,0.00,47,0,100.00,29,1967.28
+75,Tadeo Bernal Reguera,arturoarmenta@hotmail.com,2024-10-27,inactivo,1,1099.98,1099.98,1,2640.13,2640.13,0,0.00,2,0,100.00,-1,1590.15
+76,Joaquina Rosalva Calderón Pavón,alcantaramontserrat@gmail.com,2024-08-04,activo,5,2179.89,435.98,2,2537.26,1268.63,0,0.00,11,0,100.00,73,407.37
+77,Delia Montero Barragán,graciela67@gmail.com,2024-03-08,activo,3,1384.96,461.65,1,2127.06,2127.06,0,0.00,4,0,100.00,487,792.10
+78,Mtro. Emiliano Benavides,scovarrubias@gmail.com,2024-02-15,nuevo,2,1159.92,579.96,2,2314.17,1157.09,0,0.00,9,1,88.89,310,1204.25
+79,Eloy Cruz Castellanos,duilio72@gmail.com,2024-06-18,activo,5,2489.89,497.98,3,3144.07,1048.02,0,0.00,11,0,100.00,32,704.18
+80,Teresa Delgado Segovia,cottomaria@hotmail.com,2025-03-07,activo,4,1779.89,444.97,1,1832.66,1832.66,0,0.00,11,0,100.00,77,102.77
+81,Abilio Calleja Gual,emilia12@yahoo.com,2025-02-06,activo,3,854.92,284.97,1,1216.01,1216.01,0,0.00,8,0,100.00,13,411.09
+82,Evangelina Miró Perelló,carmenacuna@gmail.com,2024-10-25,activo,3,5039.83,1679.94,1,8326.20,8326.20,0,0.00,33,3,51.52,87,3336.37
+83,Nilo Agustí-Mariscal,arceosvaldo@yahoo.com,2025-06-22,vip,8,12069.80,1508.72,3,16169.30,5389.76,0,0.00,33,2,72.73,43,4149.52
+84,Adelardo López Esteve,anamatias@hotmail.com,2025-08-13,vip,6,3949.89,658.31,2,5929.71,2964.85,0,0.00,11,0,100.00,16,2029.82
+85,Sr(a). Eduardo Sandoval,nazaret46@hotmail.com,2024-02-28,nuevo,2,2222.95,1111.47,2,4042.51,2021.25,0,0.00,5,0,100.00,70,1869.56
+86,Alberto Quintanilla Sevilla,mpou@hotmail.com,2024-04-03,nuevo,2,3284.91,1642.45,2,6593.44,3296.72,0,0.00,9,0,100.00,141,3358.53
+87,Sr(a). Pamela Córdova,epifaniobalaguer@yahoo.com,2024-09-19,nuevo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,50.00
+88,Abelardo Blanco Cedillo,indiratorrez@gmail.com,2025-08-16,vip,16,18177.40,1136.09,5,22857.10,4571.42,0,0.00,63,2,90.48,3,4729.69
+89,Concepción Godoy,ecarpio@gmail.com,2024-04-30,activo,2,434.97,217.49,1,870.32,870.32,0,0.00,6,1,50.00,517,485.35
+90,Mariano Concepción,gastonaznar@yahoo.com,2025-05-08,activo,2,2129.93,1064.96,1,3638.21,3638.21,0,0.00,7,0,100.00,184,1558.28
+91,Wendolin Dulce Manzanares Reynoso,acepeda@hotmail.com,2025-03-19,activo,2,649.98,324.99,1,783.39,783.39,0,0.00,2,0,100.00,95,183.41
+92,Ramón Silvia Cortés Benítez,romuloguzman@gmail.com,2025-02-16,activo,4,4134.86,1033.71,3,9441.56,3147.19,0,0.00,14,0,100.00,50,5356.70
+93,Trini Calvet Isern,fidel01@gmail.com,2024-07-20,nuevo,2,539.98,269.99,1,1074.00,1074.00,0,0.00,2,0,100.00,22,584.02
+94,Armando Salas,dulce34@yahoo.com,2025-07-26,nuevo,1,449.99,449.99,1,1274.06,1274.06,0,0.00,1,0,100.00,23,874.07
+95,Nancy Tórrez Aponte,yeni07@hotmail.com,2025-02-03,nuevo,2,929.95,464.98,2,1457.33,728.66,0,0.00,5,0,100.00,126,577.38
+96,Norma Ontiveros Briones,ytejeda@yahoo.com,2024-10-30,vip,9,5472.77,608.09,2,7049.66,3524.83,0,0.00,23,0,100.00,83,1626.89
+97,Ramona Heredia Nicolás,esquibelalvaro@yahoo.com,2025-01-26,activo,8,5706.64,713.33,3,7648.80,2549.60,0,0.00,36,0,100.00,22,1992.16
+98,Elvira Mateo Torres,magdalena97@yahoo.com,2024-11-16,nuevo,2,339.98,169.99,1,490.56,490.56,0,0.00,2,0,100.00,290,200.58
+99,Lope Marí Porras,oliviasandoval@gmail.com,2024-07-05,nuevo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,50.00
+100,Victoriano del Tomas,nereida94@gmail.com,2024-07-16,activo,3,2454.90,818.30,1,2505.97,2505.97,0,0.00,10,0,100.00,90,101.07
+101,Administrador,admin@axionstore.com,2025-11-24,activo,0,0.00,0.00,0,0.00,0.00,0,0.00,0,0,0.00,,10000.00

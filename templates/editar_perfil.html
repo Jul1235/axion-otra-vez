@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Axion Store - Editar Perfil{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card card-custom border-0">
+                <div class="card-header bg-transparent border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-user-edit"></i> Editar Perfil
+                        </h4>
+                        <a href="{{ url_for('perfil') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('editar_perfil') }}">
+                        <!-- Información Básica -->
+                        <h5 class="mb-3 text-muted">Información Básica</h5>
+
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">
+                                <i class="fas fa-user"></i> Nombre Completo
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="nombre"
+                                   name="nombre"
+                                   value="{{ usuario.nombre }}"
+                                   required
+                                   minlength="3">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope"></i> Correo Electrónico
+                            </label>
+                            <input type="email"
+                                   class="form-control"
+                                   id="email"
+                                   name="email"
+                                   value="{{ usuario.email }}"
+                                   required>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Cambiar Contraseña -->
+                        <h5 class="mb-3 text-muted">Cambiar Contraseña <small class="text-muted">(opcional)</small></h5>
+
+                        <div class="mb-3">
+                            <label for="password_actual" class="form-label">
+                                <i class="fas fa-lock"></i> Contraseña Actual
+                            </label>
+                            <div class="password-wrapper">
+                                <input type="password"
+                                       class="form-control password-input"
+                                       id="password_actual"
+                                       name="password_actual"
+                                       placeholder="Ingresa tu contraseña actual">
+                                <button type="button" class="password-toggle" aria-pressed="false" aria-label="Mostrar contraseña">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password_nueva" class="form-label">
+                                <i class="fas fa-key"></i> Nueva Contraseña
+                            </label>
+                            <div class="password-wrapper">
+                                <input type="password"
+                                       class="form-control password-input"
+                                       id="password_nueva"
+                                       name="password_nueva"
+                                       placeholder="Mínimo 6 caracteres"
+                                       minlength="6">
+                                <button type="button" class="password-toggle" aria-pressed="false" aria-label="Mostrar contraseña">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="form-text">
+                                Deja en blanco si no deseas cambiar la contraseña
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary-custom btn-lg">
+                                <i class="fas fa-save"></i> Guardar Cambios
+                            </button>
+                            <a href="{{ url_for('perfil') }}" class="btn btn-outline-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Información de la Cuenta -->
+            <div class="card card-custom border-0 mt-4">
+                <div class="card-body">
+                    <h6 class="text-muted mb-3">
+                        <i class="fas fa-info-circle"></i> Información de la Cuenta
+                    </h6>
+                    <ul class="list-unstyled small text-muted mb-0">
+                        <li><i class="fas fa-calendar me-2"></i> Registrado: {{ usuario.fecha_registro.strftime('%d/%m/%Y') if usuario.fecha_registro else 'N/A' }}</li>
+                        <li><i class="fas fa-user-tag me-2"></i> Segmento: {{ usuario.segmento_cliente|capitalize }}</li>
+                        <li><i class="fas fa-shield-alt me-2"></i> Rol: {% if usuario.es_admin %}Administrador{% else %}Usuario{% endif %}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

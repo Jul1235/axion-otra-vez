@@ -1,0 +1,103 @@
+perfecto muchisimas gracias, ahora tengo un pedido para ti, necesito crear datos ficticios de todo en mi codigo, puedes crear 100 usuarios, con todas sus estadisticas, de productos comprados, carritos abandonados, todo lo que se ve en mi app.py, recuerda que estoy en linux debian, con maria db, que tiene de contraseña 123, y la bdd axion_store, no se si podemos crear una bdd aparte para estos datos generados, los cuales por cierto deben ser realistas, es decir, deben ser asimetricos, con numeros que no sean exactos, etc, ya que es para un analisis estadistico de la universidad, no tienes que generar los productos, pero si sus subcategorias: Procesadores (CPUs)
+ * Procesador Intel Core i9-14900K
+ * Procesador Intel Core i7-13700K
+ * Procesador Intel Core i5-13400F
+ * Procesador Intel Core i3-12100F
+ * Procesador Intel Core i5-12600K
+ * Procesador AMD Ryzen 9 7950X
+ * Procesador AMD Ryzen 7 7800X3D
+ * Procesador AMD Ryzen 5 7600X
+ * Procesador AMD Ryzen 7 5800X
+ * Procesador AMD Ryzen 5 5600G
+Tarjetas Madre (Motherboards)
+ * ASUS ROG Strix Z790-E Gaming WiFi
+ * ASUS TUF Gaming B760-PLUS WiFi
+ * Gigabyte Z690 AORUS Elite AX
+ * Gigabyte B660M DS3H AX DDR4
+ * MSI MPG Z790 Carbon WiFi
+ * MSI MAG B550 Tomahawk Max WiFi
+ * ASUS Prime H610M-E D4
+ * ASRock B550M Steel Legend
+ * Gigabyte X670E AORUS Master
+ * MSI PRO B650M-A WiFi
+Memoria RAM
+ * Corsair Vengeance RGB Pro 32GB (2x16GB) DDR4 3200MHz
+ * Corsair Vengeance LPX 16GB (2x8GB) DDR4 3200MHz
+ * Kingston Fury Beast RGB 16GB (2x8GB) DDR4 3200MHz
+ * Kingston Fury Renegade 32GB (2x16GB) DDR5 6000MHz
+ * G.Skill Trident Z5 RGB 32GB (2x16GB) DDR5 6400MHz
+ * G.Skill Ripjaws V 16GB (2x8GB) DDR4 3600MHz
+ * TeamGroup T-Force Delta RGB 16GB (2x8GB) DDR4 3200MHz
+ * Adata XPG Spectrix D50 16GB (2x8GB) DDR4 3200MHz
+ * Crucial RAM 8GB DDR4 2666MHz
+ * Corsair Dominator Platinum RGB 32GB (2x16GB) DDR5 5600MHz
+Tarjetas Gráficas (GPUs)
+ * ASUS ROG Strix GeForce RTX 4090 24GB OC
+ * MSI Gaming X Trio GeForce RTX 4080 16GB
+ * Gigabyte GeForce RTX 4070 Ti Eagle OC 12GB
+ * ASUS Dual GeForce RTX 4060 8GB
+ * Zotac Gaming GeForce RTX 3060 Twin Edge 12GB
+ * AMD Radeon RX 7900 XTX 24GB
+ * Sapphire Pulse AMD Radeon RX 7800 XT 16GB
+ * XFX Speedster SWFT 210 Radeon RX 6600 8GB
+ * MSI Ventus 2X GeForce RTX 3050 8GB
+ * Gigabyte GeForce GTX 1650 D6 OC 4GB
+Almacenamiento (SSD/HDD)
+ * Samsung 990 PRO 2TB PCIe 4.0 NVMe M.2
+ * Samsung 980 PRO 1TB PCIe 4.0 NVMe M.2
+ * Kingston NV2 1TB PCIe 4.0 NVMe M.2
+ * WD Black SN850X 2TB PCIe 4.0 NVMe M.2
+ * Crucial P3 Plus 1TB PCIe 4.0 NVMe M.2
+ * WD Blue SA510 500GB SATA SSD 2.5"
+ * Kingston A400 480GB SATA SSD 2.5"
+ * Seagate Barracuda 2TB HDD 7200RPM
+ * WD Blue 4TB HDD 5400RPM
+ * Adata XPG Gammix S70 Blade 1TB NVMe
+Fuentes de Poder (PSU)
+ * Corsair RM850x 850W 80 Plus Gold Modular
+ * Corsair RM750e 750W 80 Plus Gold Modular
+ * EVGA SuperNOVA 850 GT 850W 80 Plus Gold
+ * EVGA 600 W1, 600W 80 Plus White
+ * Thermaltake Toughpower GF1 750W 80 Plus Gold
+ * ASUS ROG Thor 1000W Platinum II
+ * MSI MPG A850G PCIE5 850W Gold
+ * Cooler Master MWE Gold 850 V2 Full Modular
+ * Gigabyte UD750GM 750W 80 Plus Gold
+ * Seasonic Focus GX-750 750W 80 Plus Gold
+Gabinetes (Cases)
+ * NZXT H9 Flow Dual-Chamber Mid-Tower
+ * NZXT H5 Flow Compact Mid-Tower
+ * Corsair 4000D Airflow Tempered Glass Mid-Tower
+ * Corsair 5000D Airflow Mid-Tower
+ * Lian Li O11 Dynamic EVO Mid-Tower
+ * Lian Li Lancool 216 RGB Mid-Tower
+ * Hyte Y60 Dual Chamber Mid-Tower
+ * Cooler Master MasterBox Q300L Mini-Tower
+ * Phanteks Eclipse G360A Mid-Tower
+ * DeepCool CH560 Digital Mid-Tower
+Refrigeración (Cooling)
+ * Cooler Master Hyper 212 Halo Black
+ * DeepCool AK620 Zero Dark
+ * DeepCool AK400 Digital
+ * NZXT Kraken Elite 360 RGB AIO Liquid Cooler
+ * Corsair iCUE H150i Elite LCD XT Liquid Cooler
+ * Arctic Liquid Freezer III 360 AIO
+ * Noctua NH-D15 Chromax.Black
+ * Thermalright Peerless Assassin 120 SE
+ * Kit 3 Ventiladores Corsair iCUE SP120 RGB Elite
+ * Kit 3 Ventiladores Lian Li Uni Fan SL120 V2
+Monitores
+ * Monitor LG UltraGear 27" QHD 144Hz IPS (27GN800-B)
+ * Monitor Samsung Odyssey G5 32" Curvo WQHD 165Hz
+ * Monitor ASUS TUF Gaming 24" FHD 165Hz (VG249Q1A)
+ * Monitor Dell Alienware 34" QD-OLED Curvo (AW3423DWF)
+ * Monitor AOC 24" FHD 144Hz (G2490VX)
+Periféricos
+ * Mouse Logitech G502 HERO High Performance
+ * Mouse Razer DeathAdder V3 Pro Wireless
+ * Teclado Mecánico Logitech G915 TKL Wireless
+ * Teclado Mecánico Razer BlackWidow V4 Pro
+ * Audífonos HyperX Cloud II Wireless
+
+y mantener este user
+(1,'Administrador','admin@axionstore.com','pbkdf2:sha256:600000$b81e5VbpFcAz5JAP$2a3475a1cabc2b1664c9bc19aa708fd3c799743c127b9c2c22d4a9611f9a06ac','2025-11-24 00:00:00',1,2,1259.99,629.995,'2025-11-29 23:59:43',0,0,0,0,NULL,0,0,2,0,250,'activo','2025-11-29 23:59:43'),

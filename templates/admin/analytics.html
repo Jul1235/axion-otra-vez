@@ -1,0 +1,657 @@
+{% extends "base.html" %}
+
+{% block title %}Axion Store - Analytics{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 300px;
+        margin: 20px 0;
+    }
+
+    .badge-segment {
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin: 5px;
+    }
+
+    .table-analytics {
+        font-size: 0.9rem;
+    }
+
+    .product-img-small {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+
+    .nav-tabs .nav-link {
+        font-weight: 600;
+    }
+
+    .nav-tabs .nav-link.active {
+        background: var(--color-primary) !important;
+        color: #fff !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5 fw-bold">
+            <i class="fas fa-chart-line"></i> Panel de Analytics Completo
+        </h1>
+        <div>
+            <a href="{{ url_for('exportar_usuarios_csv') }}" class="btn btn-success me-2">
+                <i class="fas fa-file-excel"></i> Exportar Usuarios
+            </a>
+            <a href="{{ url_for('exportar_productos_csv') }}" class="btn btn-success me-2">
+                <i class="fas fa-file-excel"></i> Exportar Productos
+            </a>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <!-- Métricas Principales -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="stat-card bg-white">
+                <i class="fas fa-users fa-2x mb-2" style="color: #3b82f6;"></i>
+                <div class="stat-value">{{ total_usuarios }}</div>
+                <div class="stat-label">Total Usuarios</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card bg-white">
+                <i class="fas fa-shopping-bag fa-2x mb-2" style="color: #10b981;"></i>
+                <div class="stat-value">{{ total_pedidos }}</div>
+                <div class="stat-label">Total Pedidos</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card bg-white">
+                <i class="fas fa-dollar-sign fa-2x mb-2" style="color: #f59e0b;"></i>
+                <div class="stat-value">${{ "%.2f"|format(total_ventas) }}</div>
+                <div class="stat-label">Total Ventas</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card bg-white">
+                <i class="fas fa-receipt fa-2x mb-2" style="color: #8b5cf6;"></i>
+                <div class="stat-value">${{ "%.2f"|format(ticket_promedio_global) }}</div>
+                <div class="stat-label">Ticket Promedio</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ TABS PARA ORGANIZAR EL CONTENIDO -->
+    <ul class="nav nav-tabs mt-4" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#general">
+                <i class="fas fa-chart-bar"></i> General
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#categorias">
+                <i class="fas fa-tags"></i> Categorías
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#productos">
+                <i class="fas fa-box"></i> Productos
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#clientes">
+                <i class="fas fa-users"></i> Clientes
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+
+        <!-- ===== TAB: GENERAL ===== -->
+        <div id="general" class="tab-pane fade show active">
+
+            <!-- Segmentación de Clientes -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-users-cog"></i> Segmentación de Clientes
+                            </h5>
+                            <div class="mt-3">
+                                {% for segmento, cantidad in segmentacion.items() %}
+                                <span class="badge badge-segment
+                                    {% if segmento == 'activo' %}bg-success
+                                    {% elif segmento == 'inactivo' %}bg-secondary
+                                    {% else %}bg-primary{% endif %}">
+                                    {{ segmento|capitalize }}: {{ cantidad }}
+                                </span>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mt-4">
+                                <canvas id="segmentacionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-wallet"></i> Métricas de Wallet
+                            </h5>
+                            <table class="table table-sm mt-3">
+                                <tr>
+                                    <td>Total Recargado:</td>
+                                    <td class="fw-bold">${{ "%.2f"|format(total_recargado) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Recargas:</td>
+                                    <td class="fw-bold">{{ total_recargas }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Recarga Promedio:</td>
+                                    <td class="fw-bold">${{ "%.2f"|format(recarga_promedio_global) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Saldo Total Usuarios:</td>
+                                    <td class="fw-bold text-success">${{ "%.2f"|format(saldo_total_usuarios) }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conversión y Abandonos -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-chart-pie"></i> Análisis de Conversión
+                            </h5>
+                            <div class="row text-center mt-3">
+                                <div class="col-md-4">
+                                    <div class="stat-card bg-light">
+                                        <div class="stat-value text-success">{{ "%.1f"|format(tasa_conversion_global) }}%</div>
+                                        <div class="stat-label">Tasa de Conversión Global</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-card bg-light">
+                                        <div class="stat-value text-warning">{{ total_abandonos }}</div>
+                                        <div class="stat-label">Carritos Abandonados</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-card bg-light">
+                                        <div class="stat-value text-danger">${{ "%.2f"|format(valor_abandonos) }}</div>
+                                        <div class="stat-label">Valor Perdido en Abandonos</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== TAB: CATEGORÍAS ===== -->
+        <div id="categorias" class="tab-pane fade">
+
+            <!-- Categorías por Ingresos -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-chart-bar"></i> Ranking de Categorías por Ingresos
+                            </h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-analytics">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Categoría</th>
+                                            <th>Ingresos</th>
+                                            <th>Vendidos</th>
+                                            <th>Pedidos</th>
+                                            <th>Conversión</th>
+                                            <th>Abandonos</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for cat in categorias_por_ingresos %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
+                                            <td>
+                                                <i class="{{ cat.icono or 'fas fa-box' }}"></i>
+                                                {{ cat.nombre }}
+                                            </td>
+                                            <td class="fw-bold text-success">${{ "%.2f"|format(cat.ingresos_totales or 0) }}</td>
+                                            <td><span class="badge bg-primary">{{ cat.total_productos_vendidos or 0 }}</span></td>
+                                            <td>{{ cat.total_pedidos or 0 }}</td>
+                                            <td>
+                                                <span class="badge {% if cat.tasa_conversion >= 50 %}bg-success{% elif cat.tasa_conversion >= 20 %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                                                    {{ "%.1f"|format(cat.tasa_conversion or 0) }}%
+                                                </span>
+                                            </td>
+                                            <td class="text-danger">${{ "%.2f"|format(cat.valor_abandonos or 0) }}</td>
+                                            <td>
+                                                <a href="{{ url_for('admin_analytics_categoria_detalle', categoria_id=cat.ID_Categoria) }}" class="btn btn-sm btn-outline-info">
+                                                    <i class="fas fa-eye"></i> Detalle
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Distribución de Ventas -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-chart-pie"></i> Distribución de Ventas por Categoría
+                            </h5>
+                            <canvas id="distribucionVentasChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-trophy"></i> Métricas Destacadas
+                            </h5>
+
+                            {% if mejor_conversion %}
+                            <div class="alert alert-success">
+                                <strong><i class="{{ mejor_conversion.icono }}"></i> Mejor Conversión:</strong><br>
+                                {{ mejor_conversion.nombre }} - {{ "%.1f"|format(mejor_conversion.tasa_conversion) }}%
+                                <br><small>{{ mejor_conversion.total_productos_vendidos }} vendidos de {{ mejor_conversion.total_agregados_carrito }} agregados</small>
+                            </div>
+                            {% endif %}
+
+                            {% if mas_abandonos %}
+                            <h6 class="mt-3">Top Abandonos:</h6>
+                            <ul class="list-unstyled">
+                                {% for cat in mas_abandonos %}
+                                <li class="mb-2">
+                                    <i class="{{ cat.icono }}"></i> {{ cat.nombre }}
+                                    <span class="badge bg-danger float-end">${{ "%.2f"|format(cat.valor_abandonos) }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Productos por Categoría -->
+            {% if productos_top_por_categoria %}
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-star"></i> Top Productos por Categoría
+                            </h5>
+
+                            {% for cat_nombre, productos in productos_top_por_categoria.items() %}
+                            <h6 class="mt-3 mb-2">{{ cat_nombre }}</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Precio</th>
+                                            <th>Vendidos</th>
+                                            <th>Ingresos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for prod in productos[:5] %}
+                                        <tr>
+                                            <td>
+                                                {% if prod.imagen %}
+                                                <img src="{{ url_for('static', filename=prod.imagen) }}" class="product-img-small me-2" onerror="this.style.display='none'">
+                                                {% endif %}
+                                                {{ prod.nombre }}
+                                            </td>
+                                            <td>${{ "%.2f"|format(prod.precio) }}</td>
+                                            <td><span class="badge bg-primary">{{ prod.total_vendido }}</span></td>
+                                            <td class="fw-bold text-success">${{ "%.2f"|format(prod.ingresos) }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- ===== TAB: PRODUCTOS ===== -->
+        <div id="productos" class="tab-pane fade">
+
+            <div class="row mt-4">
+                <!-- Productos más vendidos -->
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-trophy"></i> Top 10 Productos Más Vendidos
+                            </h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-analytics">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Producto</th>
+                                            <th>Vendidos</th>
+                                            <th>Ingresos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for producto in productos_mas_vendidos %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
+                                            <td>
+                                                {% if producto.imagen %}
+                                                <img src="{{ url_for('static', filename=producto.imagen) }}" class="product-img-small me-2" onerror="this.style.display='none'">
+                                                {% endif %}
+                                                {{ producto.nombre[:30] }}...
+                                            </td>
+                                            <td><span class="badge bg-primary">{{ producto.total_vendido }}</span></td>
+                                            <td class="fw-bold text-success">${{ "%.2f"|format(producto.ingresos) }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Productos abandonados -->
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-shopping-cart"></i> Top 10 Productos Abandonados
+                            </h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-analytics">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Producto</th>
+                                            <th>Veces</th>
+                                            <th>Valor Perdido</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for producto in productos_abandonados %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
+                                            <td>{{ producto.nombre[:30] }}...</td>
+                                            <td><span class="badge bg-warning text-dark">{{ producto.veces_agregado }}</span></td>
+                                            <td class="fw-bold text-danger">${{ "%.2f"|format(producto.valor_perdido) }}</td>
+                                        </tr>
+                                        {% else %}
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">No hay datos</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Productos bajo stock -->
+            {% if productos_bajo_stock %}
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card card-custom border-warning">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning">
+                                <i class="fas fa-exclamation-triangle"></i> Alerta: Productos con Bajo Stock
+                            </h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Stock Actual</th>
+                                            <th>Precio</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for producto in productos_bajo_stock %}
+                                        <tr>
+                                            <td>{{ producto.nombre }}</td>
+                                            <td>
+                                                <span class="badge {% if producto.stock <= 5 %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                                                    {{ producto.stock }} unidades
+                                                </span>
+                                            </td>
+                                            <td>${{ "%.2f"|format(producto.precio) }}</td>
+                                            <td>
+                                                <a href="{{ url_for('admin_editar_producto', producto_id=producto.ID_Producto) }}" class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-edit"></i> Reabastecer
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- ===== TAB: CLIENTES ===== -->
+        <div id="clientes" class="tab-pane fade">
+
+            <!-- Top Clientes -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-crown"></i> Top 10 Clientes
+                            </h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Cliente</th>
+                                            <th>Segmento</th>
+                                            <th>Compras</th>
+                                            <th>Total Gastado</th>
+                                            <th>Ticket Promedio</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for cliente in top_clientes %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
+                                            <td>
+                                                <strong>{{ cliente.nombre }}</strong><br>
+                                                <small class="text-muted">{{ cliente.email }}</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge
+                                                    {% if cliente.segmento_cliente == 'activo' %}bg-success
+                                                    {% else %}bg-secondary{% endif %}">
+                                                    {{ cliente.segmento_cliente|capitalize }}
+                                                </span>
+                                            </td>
+                                            <td>{{ cliente.total_compras }}</td>
+                                            <td class="fw-bold text-success">${{ "%.2f"|format(cliente.total_gastado) }}</td>
+                                            <td>${{ "%.2f"|format(cliente.ticket_promedio) }}</td>
+                                            <td>
+                                                <a href="{{ url_for('admin_usuario_metricas', usuario_id=cliente.ID_Users) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-chart-bar"></i> Ver Métricas
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Gráfico de Segmentación
+const ctx = document.getElementById('segmentacionChart');
+if (ctx) {
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: [
+                {% for segmento in segmentacion.keys() %}
+                '{{ segmento|capitalize }}'{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ],
+            datasets: [{
+                data: [
+                    {% for cantidad in segmentacion.values() %}
+                    {{ cantidad }}{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                backgroundColor: ['#3b82f6', '#10b981', '#6b7280']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
+// Gráfico de Distribución de Ventas
+const ctxDist = document.getElementById('distribucionVentasChart');
+if (ctxDist) {
+    new Chart(ctxDist, {
+        type: 'pie',
+        data: {
+            labels: [
+                {% for cat in distribucion_ventas %}
+                '{{ cat.nombre }}'{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ],
+            datasets: [{
+                data: [
+                    {% for cat in distribucion_ventas %}
+                    {{ cat.ingresos }}{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                backgroundColor: [
+                    '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'right'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            let value = context.parsed || 0;
+                            let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            let percentage = ((value / total) * 100).toFixed(1);
+                            return label + ': $' + value.toFixed(2) + ' (' + percentage + '%)';
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+</script>
+{% endblock %}

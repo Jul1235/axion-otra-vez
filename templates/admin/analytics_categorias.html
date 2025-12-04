@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle de {{ categoria.nombre }} - Analytics{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="{{ categoria.icono or 'fa-box' }}"></i> 
+            Analytics: {{ categoria.nombre }}
+        </h2>
+        <a href="{{ url_for('admin_analytics_categorias') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    <!-- Métricas Principales -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-success text-white shadow-sm">
+                <div class="card-body">
+                    <h6>Ingresos Totales</h6>
+                    <h3>${{ "%.2f"|format(metricas.ingresos_totales if metricas else 0) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-primary text-white shadow-sm">
+                <div class="card-body">
+                    <h6>Productos Vendidos</h6>
+                    <h3>{{ metricas.total_productos_vendidos if metricas else 0 }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white shadow-sm">
+                <div class="card-body">
+                    <h6>Tasa de Conversión</h6>
+                    <h3>{{ "%.1f"|format(metricas.tasa_conversion if metricas else 0) }}%</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark shadow-sm">
+                <div class="card-body">
+                    <h6>Productos Activos</h6>
+                    <h3>{{ metricas.productos_activos if metricas else 0 }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Productos de esta categoría -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-box"></i> Productos en esta Categoría
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if productos %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Imagen</th>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Vendidos</th>
+                            <th>Ingresos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prod in productos %}
+                        <tr>
+                            <td>{{ prod.ID_Producto }}</td>
+                            <td>
+                                {% if prod.imagen %}
+                                <img src="{{ url_for('static', filename=prod.imagen) }}" 
+                                     style="width: 40px; height: 40px; object-fit: cover;">
+                                {% else %}
+                                <i class="fas fa-image text-muted"></i>
+                                {% endif %}
+                            </td>
+                            <td>{{ prod.nombre }}</td>
+                            <td>${{ "%.2f"|format(prod.precio) }}</td>
+                            <td>
+                                {% if prod.stock == 0 %}
+                                <span class="badge bg-danger">{{ prod.stock }}</span>
+                                {% elif prod.stock < 10 %}
+                                <span class="badge bg-warning">{{ prod.stock }}</span>
+                                {% else %}
+                                <span class="badge bg-success">{{ prod.stock }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">{{ prod.total_vendido }}</span>
+                            </td>
+                            <td>
+                                <strong class="text-success">
+                                    ${{ "%.2f"|format(prod.ingresos) }}
+                                </strong>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No hay productos en esta categoría</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Subcategorías -->
+    {% if subcategorias %}
+    <div class="card shadow mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-list"></i> Subcategorías
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Subcategoría</th>
+                            <th>Productos</th>
+                            <th>Vendidos</th>
+                            <th>Ingresos</th>
+                            <th>Conversión</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sub, metricas_sub in subcategorias %}
+                        <tr>
+                            <td><strong>{{ sub.nombre }}</strong></td>
+                            <td>{{ sub.productos|length }}</td>
+                            <td>{{ metricas_sub.total_productos_vendidos if metricas_sub else 0 }}</td>
+                            <td>${{ "%.2f"|format(metricas_sub.ingresos_totales if metricas_sub else 0) }}</td>
+                            <td>
+                                <span class="badge bg-info">
+                                    {{ "%.1f"|format(metricas_sub.tasa_conversion if metricas_sub else 0) }}%
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Top Clientes -->
+    {% if top_clientes %}
+    <div class="card shadow mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-users"></i> Top 10 Clientes
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Cliente</th>
+                            <th>Email</th>
+                            <th>Productos</th>
+                            <th>Total Gastado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cliente in top_clientes %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ cliente.nombre }}</td>
+                            <td>{{ cliente.email }}</td>
+                            <td>
+                                <span class="badge bg-primary">{{ cliente.productos_comprados }}</span>
+                            </td>
+                            <td>
+                                <strong class="text-success">
+                                    ${{ "%.2f"|format(cliente.total_gastado) }}
+                                </strong>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

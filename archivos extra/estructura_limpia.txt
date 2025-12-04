@@ -1,0 +1,67 @@
+.
+├── app.py
+├── jsmain.js
+├── static
+│   ├── css
+│   │   └── style.css
+│   ├── img
+│   │   ├── 1763635430_nft.png
+│   │   ├── 1763635596_mango.png
+│   │   ├── 1763651811_gato.png
+│   │   ├── 1763654770_ete_sech.png
+│   │   ├── 1763660400_memoria_ram_corsair.png
+│   │   ├── 1763915066_Procesador-Amd-Ryzen-7-5700X-Ghz-AM4_42712_1.jpeg
+│   │   ├── 1763951370_c06444203.png
+│   │   ├── 1763951711_w800.png
+│   │   ├── 1763952504_1697445940_1781470.png
+│   │   ├── 1763952681_cc4d1f7a-ac7e-44d6-b493-ff98c6a20de6.6d83e4629c14da08ed0e9222cb7e841f.jpg
+│   │   ├── 1763952852_71OWtcxKgvL.jpg
+│   │   ├── bg1.webp
+│   │   ├── bg2.webp
+│   │   ├── bg3.webp
+│   │   ├── el_pepe.png
+│   │   ├── Gtx.png
+│   │   ├── MonitorXiaomiG34.png
+│   │   └── RTX4090.png
+│   ├── js
+│   │   ├── autocomplete.js
+│   │   ├── cart-inline.js
+│   │   ├── notifications.js
+│   │   ├── password-toggle.js
+│   │   └── skeletons.js
+│   └── Marca
+│       └── logo.png
+├── templates
+│   ├── admin
+│   │   ├── agregar_categoria.html
+│   │   ├── agregar_producto.html
+│   │   ├── agregar_subcategoria.html
+│   │   ├── analytics.html
+│   │   ├── categorias.html
+│   │   ├── categorias_referencia.html
+│   │   ├── dashboard.html
+│   │   ├── editar_categoria.html
+│   │   ├── editar_producto.html
+│   │   ├── editar_subcategoria.html
+│   │   ├── pedidos.html
+│   │   ├── productos.html
+│   │   ├── usuario_metricas.html
+│   │   └── usuarios.html
+│   ├── base.html
+│   ├── cart.html
+│   ├── editar_perfil.html
+│   ├── errors
+│   │   ├── 400.html
+│   │   ├── 403.html
+│   │   ├── 404.html
+│   │   └── 500.html
+│   ├── historial.html
+│   ├── home.html
+│   ├── index.html
+│   ├── login.html
+│   ├── perfil.html
+│   ├── product.html
+│   ├── register.html
+│   ├── wallet.html
+│   └── wishlist.html
+└──

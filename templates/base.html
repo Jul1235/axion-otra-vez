@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Axion Store{% endblock %}</title>
+    
+    <!-- ✅ PREVENIR FLASH DE TEMA - Debe ir ANTES del CSS -->
+    <script>
+        (function() {
+            var theme = localStorage.getItem('axion-theme');
+            function applyDark() {
+                document.documentElement.classList.add('dark-mode');
+                document.documentElement.style.backgroundColor = '#0F1217';
+            }
+            function applyLight() {
+                document.documentElement.classList.remove('dark-mode');
+                document.documentElement.style.backgroundColor = '';
+            }
+
+            if (theme === 'dark') {
+                applyDark();
+            } else if (theme === 'light') {
+                applyLight();
+            } else if (theme === 'system') {
+                // seguir preferencia del sistema
+                var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) applyDark(); else applyLight();
+            }
+        })();
+    </script>
+
+    <script>
+    // Move the single .navbar-nav into the offcanvas on mobile open, and back on close.
+    document.addEventListener('DOMContentLoaded', function () {
+        var offcanvasEl = document.getElementById('mobileOffcanvas');
+        var collapseEl = document.getElementById('navbarNav');
+        if (!offcanvasEl || !collapseEl) return;
+        var offcanvasBody = offcanvasEl.querySelector('.offcanvas-body');
+        var navList = collapseEl.querySelector('.navbar-nav');
+        if (!navList) return;
+
+        var bsOff = null;
+        // initialize when bootstrap JS is available
+        function ensureBootstrap() {
+            if (window.bootstrap && window.bootstrap.Offcanvas) {
+                bsOff = window.bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
+                attachHandlers();
+            } else {
+                setTimeout(ensureBootstrap, 50);
+            }
+        }
+
+        function attachHandlers() {
+            offcanvasEl.addEventListener('show.bs.offcanvas', function () {
+                if (!offcanvasBody.contains(navList)) offcanvasBody.appendChild(navList);
+                document.body.classList.add('navbar-open');
+            });
+
+            offcanvasEl.addEventListener('hidden.bs.offcanvas', function () {
+                if (!collapseEl.contains(navList)) collapseEl.appendChild(navList);
+                document.body.classList.remove('navbar-open');
+                // cleanup any opened dropdowns inside offcanvas
+                offcanvasBody.querySelectorAll('.dropdown-menu.show').forEach(function(m){ m.classList.remove('show'); });
+            });
+
+            // In mobile offcanvas, Bootstrap dropdown toggle may not behave as expected when
+            // the nav is moved. Provide a simple toggle behavior for dropdowns inside the offcanvas.
+            function initOffcanvasDropdowns() {
+                // Delegated handler: simpler and avoids double-attachment
+                if (offcanvasBody._offcanvasDelegated) return;
+                offcanvasBody._offcanvasDelegated = true;
+                offcanvasBody.addEventListener('click', function(e){
+                    const t = e.target.closest && e.target.closest('.nav-item.dropdown .dropdown-toggle');
+                    if (!t) return;
+                    // Only handle if navList is currently inside offcanvas
+                    if (!offcanvasBody.contains(t)) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // If Bootstrap Dropdown API is available, use it to toggle reliably
+                    try {
+                        if (window.bootstrap && window.bootstrap.Dropdown) {
+                            // close other shown menus first
+                            offcanvasBody.querySelectorAll('.dropdown-menu.show').forEach(function(m){
+                                if (m !== t.nextElementSibling) {
+                                    m.classList.remove('show');
+                                    var prev = m.previousElementSibling;
+                                    if (prev) { prev.classList.remove('show'); prev.setAttribute('aria-expanded', 'false'); }
+                                }
+                            });
+                            var dd = window.bootstrap.Dropdown.getOrCreateInstance(t);
+                            dd.toggle();
+                            return;
+                        }
+                    } catch (err) {
+                        // fallthrough to manual toggle
+                    }
+
+                    // Fallback manual toggle if Bootstrap Dropdown API isn't present
+                    const menu = t.nextElementSibling;
+                    if (!menu) return;
+                    const isShown = menu.classList.contains('show');
+                    offcanvasBody.querySelectorAll('.dropdown-menu.show').forEach(function(m){ if (m !== menu) m.classList.remove('show'); });
+                    if (!isShown) {
+                        menu.classList.add('show');
+                        t.classList.add('show');
+                        t.setAttribute('aria-expanded', 'true');
+                    } else {
+                        menu.classList.remove('show');
+                        t.classList.remove('show');
+                        t.setAttribute('aria-expanded', 'false');
+                    }
+                }, true);
+            }
+
+            // Initialize dropdown handlers when the offcanvas is shown and when nav is moved
+            offcanvasEl.addEventListener('show.bs.offcanvas', function () {
+                initOffcanvasDropdowns();
+            });
+
+            // Close offcanvas when clicking a link inside it (except anchor-only links)
+            offcanvasBody.addEventListener('click', function (e) {
+                var a = e.target.closest && e.target.closest('a');
+                if (!a) return;
+                var href = a.getAttribute('href') || '';
+                if (href && href.indexOf('javascript:') !== 0 && href.indexOf('#') !== 0) {
+                    try { if (bsOff) bsOff.hide(); } catch (err) {}
+                }
+            });
+
+            // Ensure on resize (desktop) the navList is inside the collapse
+            function ensureDesktopPlacement() {
+                if (window.innerWidth >= 992) { // lg and up
+                    if (!collapseEl.contains(navList)) collapseEl.appendChild(navList);
+                }
+            }
+            window.addEventListener('resize', ensureDesktopPlacement);
+            ensureDesktopPlacement();
+        }
+
+        ensureBootstrap();
+    });
+    </script>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        /* Make mobile offcanvas size match its content and be scrollable when tall */
+        .offcanvas { max-width: 340px; width: auto; }
+        .offcanvas-body { max-height: calc(100vh - 110px); overflow: auto; }
+
+        /* Reduce spacing inside mobile offcanvas nav to fit more items */
+        @media (max-width: 767.98px) {
+            .offcanvas-body .navbar-nav .nav-link {
+                padding: .35rem .5rem;
+                line-height: 1.05;
+                font-size: 0.95rem;
+            }
+            .offcanvas-body .navbar-nav .nav-item { margin-bottom: 0.06rem; }
+            /* Fixed width for offcanvas on small screens to keep consistent size */
+            .offcanvas.offcanvas-end { width: 340px !important; max-width: 92%; }
+            .offcanvas-body { padding-top: .45rem; padding-bottom: .45rem; }
+            .offcanvas .dropdown-menu {
+                position: static !important;
+                display: none;
+                box-shadow: none;
+                background: transparent;
+                border: none;
+                padding-left: 0.4rem;
+            }
+            .offcanvas .dropdown-menu.show { display: block; }
+            .offcanvas .dropdown-item { padding-left: 0.9rem; }
+        }
+        /* Mobile offcanvas visual improvements */
+        .offcanvas {
+            border-radius: 12px;
+            width: 340px !important;
+            max-width: 92%;
+        }
+        /* Ensure nav items inside offcanvas are left-aligned and stacked */
+        .offcanvas .navbar-nav {
+            align-items: flex-start;
+            justify-content: flex-start;
+            width: 100%;
+        }
+        .offcanvas .navbar-nav .nav-link {
+            text-align: left !important;
+            padding-left: .8rem;
+            width: 100%;
+        }
+        .navbar-toggler {
+            border-radius: 8px;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='Marca/logo.png') }}" alt="Axion Store" class="navbar-logo">
+            </a>
+            
+            <!-- Mobile toggler: abrirá offcanvas en móviles (se mueve el <ul> dentro) -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileOffcanvas" aria-controls="mobileOffcanvas">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if session.get('user_id') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">
+                            <i class="fas fa-home"></i> Inicio
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% if session.get('user_id') %}
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('historial') }}">
+                                <i class="fas fa-history"></i> Mis Pedidos
+                            </a>
+                        </li>
+                        
+                        {% if session.get('is_admin') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                                <i class="fas fa-cog"></i> Panel Admin
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> {{ session['user_name'] or 'Mi Cuenta' }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ url_for('perfil') }}"><i class="fas fa-user"></i>Mi Perfil</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('wishlist') }}">
+                                        <i class="fas fa-heart"></i>Mi Lista de Deseos
+                                        {% if wishlist_count and wishlist_count > 0 %}
+                                        <span id="wishlist-count" class="badge bg-danger">{{ wishlist_count }}</span>
+                                        {% endif %}
+                                    </a>
+                                </li>
+                                <li><a class="dropdown-item" href="{{ url_for('wallet') }}"><i class="fas fa-wallet"></i>Mi Wallet</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('historial') }}"><i class="fas fa-history"></i>Mis Pedidos</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Cerrar Sesión</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">
+                                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">
+                                <i class="fas fa-user-plus"></i> Registrarse
+                            </a>
+                        </li>
+                    {% endif %}
+                    <!-- Enlace al carrito visible solo en pantallas pequeñas (se añade al menú lateral) -->
+                    {% if session.get('user_id') %}
+                    <li class="nav-item d-lg-none mobile-cart-link">
+                        <a class="nav-link" href="{{ url_for('cart') }}">
+                            <i class="fas fa-shopping-cart"></i> Carrito
+                            <span id="cart-count-mobile" class="badge bg-danger ms-2" style="font-size:0.7rem;">{{ cart_count or 0 }}</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+                        <!-- Offcanvas para menú móvil: inicialmente está vacío y recibirá el <ul> dinámicamente -->
+                        <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileOffcanvas" aria-labelledby="mobileOffcanvasLabel">
+                            <div class="offcanvas-header">
+                                <a class="navbar-brand me-2" href="{{ url_for('index') }}">
+                                        <img src="{{ url_for('static', filename='Marca/logo.png') }}" alt="Axion" style="height:36px; max-height:36px;">
+                                </a>
+                                <h5 class="offcanvas-title flex-grow-1" id="mobileOffcanvasLabel">Menú</h5>
+                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                            </div>
+                            <div class="offcanvas-body p-0">
+                                <!-- Sección de usuario dentro del offcanvas -->
+                                <div class="offcanvas-user-section">
+                                    {% if session.get('user_id') %}
+                                        <div class="offcanvas-user-avatar">{{ session['user_name'][:1]|upper }}</div>
+                                        <div class="offcanvas-user-info">
+                                            <div class="offcanvas-user-name">{{ session['user_name'] }}</div>
+                                            <div class="offcanvas-user-email">{{ session['user_email'] }}</div>
+                                        </div>
+                                    {% else %}
+                                        <div class="offcanvas-user-avatar"><i class="fas fa-user"></i></div>
+                                        <div class="offcanvas-user-info">
+                                            <div class="offcanvas-user-name">Invitado</div>
+                                            <div class="offcanvas-user-email">Inicia sesión para más opciones</div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <!-- nav items will be moved here dynamically -->
+                            </div>
+                        </div>
+            
+            <!-- Icono carrito (solo para usuarios autenticados) -->
+            {% if session.get('user_id') %}
+            <a id="cart-button" href="{{ url_for('cart') }}" class="btn btn-outline-light ms-3 position-relative" title="Ver carrito">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger {% if not (cart_count and cart_count>0) %}d-none{% endif %}" style="font-size:0.65rem;">
+                    {{ cart_count or 0 }}
+                </span>
+            </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Mensajes Flash -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show auto-dismiss" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Contenido Principal -->
+    <main class="site-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 Axion Store. Dando lo mejor a nuestros clientes.</p>
+            <p class="mb-0"><small>
+                <a href="https://forms.gle/PLACEHOLDER" target="_blank" rel="noopener noreferrer">Déjanos tu feedback</a>
+            </small></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/password-toggle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/autocomplete.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/action-history.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cart-inline.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/wishlist.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/skeletons.js') }}"></script>
+    
+    <script>
+    // Control simple para la barra lateral móvil: agregar clase al body
+    document.addEventListener('DOMContentLoaded', function () {
+        var collapseEl = document.getElementById('navbarNav');
+        if (collapseEl) {
+            collapseEl.addEventListener('shown.bs.collapse', function () {
+                // solo en pantallas pequeñas y vertical
+                if (window.matchMedia && window.matchMedia('(max-width: 576px) and (orientation: portrait)').matches) {
+                    document.body.classList.add('navbar-open');
+                }
+            });
+            collapseEl.addEventListener('hidden.bs.collapse', function () {
+                document.body.classList.remove('navbar-open');
+            });
+        }
+
+        // Sincronizar contador del carrito (móvil/desktop)
+        var desktopCount = document.getElementById('cart-count');
+        var mobileCount = document.getElementById('cart-count-mobile');
+        if (desktopCount && mobileCount) {
+            // inicializar
+            mobileCount.textContent = desktopCount.textContent;
+            // observar cambios simples: cada vez que el texto cambie (no perfecto, pero útil)
+            var obs = new MutationObserver(function() {
+                mobileCount.textContent = desktopCount.textContent;
+                if (desktopCount.style.display === 'none') mobileCount.style.display = 'none'; else mobileCount.style.display = '';
+            });
+            obs.observe(desktopCount, { characterData: true, childList: true, subtree: true });
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        // Auto-cerrar solo alertas marcadas como auto-dismiss (flash messages)
+        const autoAlerts = document.querySelectorAll('.alert.auto-dismiss');
+        if (autoAlerts && autoAlerts.length > 0) {
+            setTimeout(function () {
+                autoAlerts.forEach(function (el) {
+                    try {
+                        var bsAlert = bootstrap.Alert.getOrCreateInstance(el);
+                        bsAlert.close();
+                    } catch (e) {
+                        el.classList.remove('show');
+                        el.style.display = 'none';
+                    }
+                });
+            }, 3000);
+        }
+
+        // Theme control: expose a global setter `setAxionTheme(theme)` where theme is 'light'|'dark'|'system'
+        window.setAxionTheme = function(theme) {
+            try {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('axion-theme', 'dark');
+                } else if (theme === 'light') {
+                    document.documentElement.classList.remove('dark-mode');
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('axion-theme', 'light');
+                } else if (theme === 'system') {
+                    // seguir preferencia de sistema
+                    localStorage.setItem('axion-theme', 'system');
+                    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (prefersDark) {
+                        document.documentElement.classList.add('dark-mode');
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.documentElement.classList.remove('dark-mode');
+                        document.body.classList.remove('dark-mode');
+                    }
+                }
+            } catch (e) {
+                console.error('Error aplicando tema', e);
+            }
+        };
+
+        // Escuchar cambios en la preferencia del sistema para modo 'system'
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                var t = localStorage.getItem('axion-theme');
+                if (t === 'system') {
+                    if (e.matches) {
+                        document.documentElement.classList.add('dark-mode');
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.documentElement.classList.remove('dark-mode');
+                        document.body.classList.remove('dark-mode');
+                    }
+                }
+            });
+        }
+    });
+    // Cerrar offcanvas al hacer clic fuera (adicional por compatibilidad móvil)
+    document.addEventListener('click', function (e) {
+        try {
+            var off = document.getElementById('mobileOffcanvas');
+            if (!off) return;
+            var instance = bootstrap.Offcanvas.getInstance(off);
+            if (!instance) return;
+            if (!off.classList.contains('show')) return;
+            // if the click target is not inside the offcanvas or the toggler, hide it
+            var toggler = document.querySelector('.navbar-toggler');
+            if (!off.contains(e.target) && !(toggler && toggler.contains(e.target))) {
+                instance.hide();
+            }
+        } catch (err) {
+            // ignore
+        }
+    });
+    
+// Navbar sticky con animación
+document.addEventListener('DOMContentLoaded', function () {
+    const navbar = document.querySelector('.navbar-custom');
+    
+    window.addEventListener('scroll', function () {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Solo cambiar apariencia al hacer scroll
+        if (scrollTop > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+});
+</script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
